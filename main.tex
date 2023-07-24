@@ -2,7 +2,7 @@
 \usepackage{tesi}
 
 \usepackage[a4paper]{geometry}		% Formato del foglio
-%\usepackage[italian]{babel}			% Supporto per l'italiano
+\usepackage[italian]{babel}			% Supporto per l'italiano
 \usepackage[utf8]{inputenc}			% Supporto per UTF-8
 %\usepackage[a-1b]{pdfx}				% File conforme allo standard PDF-A (obbligatorio per la consegna)
 
@@ -76,18 +76,22 @@
 
 \begin{document}
 
-\frontespizio
-\afterpreface
+	\frontespizio
+	\afterpreface
 
-\chapter*{Sommario}
-\addcontentsline{toc}{chapter}{Sommario}  
-\label{cap:sommario}
+	\chapter*{Sommario}
+	\addcontentsline{toc}{chapter}{Sommario}  
+	\label{cap:sommario}
+	
+	\chapter{Introduzione}
+	\label{sec:introduzione}
+	
+	\chapter{Trusted Execution Environment}
+	Un \textit{Trusted Execution Environment} (TEE) è un'area isolata e sicura all'interno di un dispositivo, progettata per operare in modo affidabile ed indipendente dal resto del sistema operativo, con l'obiettivo di ospitare applicazioni e processi sensibili, eseguendo codice autenticato.
+ 	
 
-\chapter{Introduzione}
-\label{sec:introduzione}
-
-\bibliographystyle{unsrt}
-\bibliography{bibliografia}
-\addcontentsline{toc}{chapter}{Bibliografia}
+	\bibliographystyle{unsrt}
+	\bibliography{bibliografia}
+	\addcontentsline{toc}{chapter}{Bibliografia}
 
 \end{document}
