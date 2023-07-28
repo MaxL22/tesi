@@ -88,15 +88,55 @@
 	\label{sec:introduzione}
 	
 	\chapter{Trusted Execution Environment}
+	\label{cap:TEE}
 	Un \textit{Trusted Execution Environment} (TEE) è un'area isolata e sicura all'interno di un dispositivo, concepita con l'intento di operare in modo affidabile ed indipendente dal resto del sistema operativo, con l'obiettivo di ospitare applicazioni e processi sensibili, eseguendo unicamente codice autenticato.
 	
 	I TEE stanno progressivamente guadagnando maggiore rilevanza in virtù del loro impiego per l'arricchimento di piattaforme preesistenti, offrendo soluzioni atte a proteggere operazioni e dati sensibili da accessi o manipolazioni non autorizzate. Grazie a tali caratteristiche, le TEE trovano utilizzo in diverse applicazioni e ambiti operativi
 	
 	I TEE sono presenti sulla maggioranza dei cellulari tramite nomi quali \textit{TrustZone} di ARM, \textit{Samsung Knox}, \textit{Qualcomm QTEE}, \textit{Google Titan M} e \textit{Apple Secure Enclave}, con finalità che possono essere autenticazione sicura, gestione di chiavi crittografiche e gestione dei diritti digitali.
 	
+	L'utilizzo dei TEE però sta diventando sempre più importante anche in ambito Desktop, Server e IoT, sul mercato sono presenti sempre più opzioni per eseguire codice sicuro anche in questi ambienti.
+	
+	L'impiego dei TEE però sta assumendo un ruolo crescentemente significativo non solo nell'ambito dei dispositivi mobili, ma anche nei settori Desktop, Server e IoT. Sono sempre più numerosi i prodotti sul mercato che consentono esecuzione di codice sicuro anche in tali ambienti. Tale tendenza riflette la crescente preoccupazione per la sicurezza informatica e la protezione dei dati sensibili in un'ampia gamma di applicazioni e scenari operativi.
+	
+	In questo capitolo verranno esplorate le principali caratteristiche dei TEE e come tali implementazioni possano contribuire a migliorare l'affidabilità di vari tipi di sistemi.
+	
+	\newpage
+	
 	\section{TEE GlobalPlatform}
+	\label{sec:GlobalPlatform}
+	%Deve contenere: cos'è globalplatform, architettura, cosa ne consegue (che sicurezza e cosa forniscono)
+	Il concetto di "Trusted Execution Environment" denota una combinazione di tecniche software e hardware progettate per creare un ambiente sicuro e protetto. Tuttavia, il termine risulta piuttosto generico, poiché fa riferimento a una vasta gamma di prodotti con caratteristiche implementative e livelli di sicurezza diversi.
+	
+	L'assenza di standardizzazione potrebbe essere causa di confusione tra i consumatori e diventare un ostacolo per la portabilità ed interoperabilità di Trusted Applications (TA) su diverse implementazioni di TEE. Ciò implica la necessità di gestire una gamma di differenze nell'implementazione e garanzie di sicurezza offerte, complicando l'utilizzo di tali ambienti in modo uniforme e trasversale.
+	
+	A risoluzione di questi problemi il consorzio GlobalPlatform pubblica dei documenti contenenti specifiche che coprono vari aspetti chiave della realizzazione di TEE, favorendo l'interoperabilità tra dispositivi e sistemi.
+	
+	All'interno delle specifiche di GlobalPlatform, si trovano direttive dettagliate relative a diverse tematiche riguardanti i Trusted Execution Environments, tra le quali: il modello architetturale dei TEE, delineando le sue componenti fondamentali, un insieme standard di interfacce API e la gestione sicura delle credenziali.
+	
+	Un altro aspetto trattato è l'istituzione di parametri e criteri per la valutazione della sicurezza dei TEE. Attraverso queste direttive, si mira a garantire che tali ambienti protetti soddisfino precisi standard di robustezza e affidabilità.
+	
+	Un numero sempre crescente di organizzazioni sta adottando questi standard e adeguando le proprie soluzioni alle specifiche GlobalPlatform. La tendenza generale è di una sempre più ampia adozione di TEE in conformità con queste direttive, pertanto la seguente dissertazione farà riferimento a TEE conformi GlobalPlatform.
+	
+	\subsection{Architettura TEE}
+	\label{subsec:architettura}
  	
-
+ 	
+ 	\section{Applicazioni dei TEE}
+ 	\label{sec:applicazioni}
+	
+	\section{Supporto Hardware per i TEE}
+	\label{sec:supporto-hw}
+	%Da scrivere tutti i tipi di TEE (quelli scritti sopra, sgx, sev, trustzone, processori dedicati, TEE RISC-V) ed il relativo hardware
+	
+	\section{Vulnerabilità Comuni}
+	\label{sec:vulnerabilità}
+	
+	
+	
+	
+	
+	
 	\bibliographystyle{unsrt}
 	\bibliography{bibliografia}
 	\addcontentsline{toc}{chapter}{Bibliografia}
