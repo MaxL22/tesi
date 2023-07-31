@@ -1,4 +1,4 @@
-% !TeX spellcheck = <none>
+% !TeX spellcheck = italian
 \documentclass[12pt,italian]{report}
 \usepackage{tesi}
 
@@ -28,6 +28,9 @@
 \usetikzlibrary{positioning}
 \usetikzlibrary{calc}
 \usetikzlibrary{shapes}
+
+\usepackage[autostyle = false]{csquotes}
+\MakeOuterQuote{"}
 
 \newcommand{\GeneraSchemaPacchetto}[2]{{
 \begin{tikzpicture}
@@ -89,13 +92,11 @@
 	
 	\chapter{Trusted Execution Environment}
 	\label{cap:TEE}
-	Un \textit{Trusted Execution Environment} (TEE) è un'area isolata e sicura all'interno di un dispositivo, concepita con l'intento di operare in modo affidabile ed indipendente dal resto del sistema operativo, con l'obiettivo di ospitare applicazioni e processi sensibili, eseguendo unicamente codice autenticato.
+	Un \textit{Trusted Execution Environment} (TEE) è un'area isolata e sicura all'interno di un dispositivo, concepita con l'intento di operare in modo affidabile ed indipendente dal resto del sistema operativo. Questo permette di ospitare applicazioni e processi sensibili, eseguendo unicamente codice autenticato.
 	
-	I TEE stanno progressivamente guadagnando maggiore rilevanza in virtù del loro impiego per l'arricchimento di piattaforme preesistenti, offrendo soluzioni atte a proteggere operazioni e dati sensibili da accessi o manipolazioni non autorizzate. Grazie a tali caratteristiche, le TEE trovano utilizzo in diverse applicazioni e ambiti operativi
+	I TEE stanno progressivamente guadagnando maggiore rilevanza in virtù del loro impiego per l'arricchimento di piattaforme preesistenti, offrendo soluzioni atte a incrementare la sicurezza e prevenire accessi o manipolazioni non autorizzate. Grazie a tali caratteristiche, i TEE trovano utilizzo in diverse applicazioni e ambiti operativi
 	
-	I TEE sono presenti sulla maggioranza dei cellulari tramite nomi quali \textit{TrustZone} di ARM, \textit{Samsung Knox}, \textit{Qualcomm QTEE}, \textit{Google Titan M} e \textit{Apple Secure Enclave}, con finalità che possono essere autenticazione sicura, gestione di chiavi crittografiche e gestione dei diritti digitali.
-	
-	L'utilizzo dei TEE però sta diventando sempre più importante anche in ambito Desktop, Server e IoT, sul mercato sono presenti sempre più opzioni per eseguire codice sicuro anche in questi ambienti.
+	I TEE sono presenti sulla maggioranza dei cellulari tramite nomi quali \textit{TrustZone} di ARM, \textit{Samsung Knox}, \textit{Qualcomm QTEE}, \textit{Google Titan M} e \textit{Apple Secure Enclave}, con più finalità, tra le quali: autenticazione sicura, gestione di chiavi crittografiche e gestione dei diritti digitali.
 	
 	L'impiego dei TEE però sta assumendo un ruolo crescentemente significativo non solo nell'ambito dei dispositivi mobili, ma anche nei settori Desktop, Server e IoT. Sono sempre più numerosi i prodotti sul mercato che consentono esecuzione di codice sicuro anche in tali ambienti. Tale tendenza riflette la crescente preoccupazione per la sicurezza informatica e la protezione dei dati sensibili in un'ampia gamma di applicazioni e scenari operativi.
 	
@@ -106,27 +107,24 @@
 	\section{TEE GlobalPlatform}
 	\label{sec:GlobalPlatform}
 	%Deve contenere: cos'è globalplatform, architettura, cosa ne consegue (che sicurezza e cosa forniscono)
-	Il concetto di "Trusted Execution Environment" denota una combinazione di tecniche software e hardware progettate per creare un ambiente sicuro e protetto. Tuttavia, il termine risulta piuttosto generico, poiché fa riferimento a una vasta gamma di prodotti con caratteristiche implementative e livelli di sicurezza diversi.
+	Il concetto di "Trusted Execution Environment" denota una combinazione di tecniche software e hardware progettate per creare un ambiente sicuro e protetto. Nonostante ciò, il termine risulta piuttosto generico, in quanto fa riferimento a una vasta gamma di prodotti con caratteristiche implementative e livelli di sicurezza diversi.
 	
 	L'assenza di standardizzazione potrebbe essere causa di confusione tra i consumatori e diventare un ostacolo per la portabilità ed interoperabilità di Trusted Applications (TA) su diverse implementazioni di TEE. Ciò implica la necessità di gestire una gamma di differenze nell'implementazione e garanzie di sicurezza offerte, complicando l'utilizzo di tali ambienti in modo uniforme e trasversale.
 	
 	A risoluzione di questi problemi il consorzio GlobalPlatform pubblica dei documenti contenenti specifiche che coprono vari aspetti chiave della realizzazione di TEE, favorendo l'interoperabilità tra dispositivi e sistemi.
 	
-	All'interno delle specifiche di GlobalPlatform, si trovano direttive dettagliate relative a diverse tematiche riguardanti i Trusted Execution Environments, tra le quali: il modello architetturale dei TEE, delineando le sue componenti fondamentali, un insieme standard di interfacce API e la gestione sicura delle credenziali.
+	All'interno delle specifiche di GlobalPlatform, si possono trovare direttive dettagliate relative a diverse tematiche riguardanti i Trusted Execution Environments, tra le quali: il modello architetturale dei TEE, delineando le sue componenti fondamentali, un insieme standard di interfacce API e metodi per la gestione sicura delle credenziali.
 	
 	Un altro aspetto trattato è l'istituzione di parametri e criteri per la valutazione della sicurezza dei TEE. Attraverso queste direttive, si mira a garantire che tali ambienti protetti soddisfino precisi standard di robustezza e affidabilità.
 	
-	Un numero sempre crescente di organizzazioni sta adottando questi standard e adeguando le proprie soluzioni alle specifiche GlobalPlatform. La tendenza generale è di una sempre più ampia adozione di TEE in conformità con queste direttive, pertanto la seguente dissertazione farà riferimento a TEE conformi GlobalPlatform.
+	Un numero sempre crescente di organizzazioni sta adottando questi standard e adeguando le proprie soluzioni alle specifiche GlobalPlatform. La tendenza generale è di una sempre più ampia adozione di TEE in conformità con queste direttive, pertanto questo elaborato farà riferimento a TEE conformi GlobalPlatform.
+	
 	
 	\bigbreak \noindent
 	
 	\subsection{Architettura TEE}
 	\label{subsec:architettura}
- 	Le specifiche di GlobalPlatform non si riferiscono a implementazioni specifiche riguardanti l'architettura, ma piuttosto delineano una struttura generale degli elementi logici costituenti il TEE e le loro interazioni.
- 	
- 	
- 	
- 	
+ 	Le direttive di GlobalPlatform non fanno riferimento ad implementazioni specifiche per quanto riguarda l'architettura, ma piuttosto delineano una struttura generale degli elementi logici costituenti il TEE e le loro interazioni.
  	
  	
  	\section{Applicazioni dei TEE}
@@ -141,8 +139,31 @@
 	
 	
 	
+	\chapter{TEE in Ambiente Cloud}
+	\label{cap:problema}
+	%Virttee design problems, problema nel portare roba in cloud e come risolverli
+	%Problematiche, come sono state affrontate
+	%Componenti senza implementazione, mettere schemi di funzionamento
 	
 	
+	
+	\chapter{Sicurezza dei Dati}
+	\label{cap:implementazione}
+	%Dettagli riguardo all'implementazione, soluzioni tecniche trovate
+	%Iniziare con ciò che ha fatto marco? 
+	%Section del capitolo prima?
+	
+	
+	
+	\chapter{Analisi Performance}
+	\label{cap:dati}
+	%Riportare performance generali del sistema, dati di Marco
+	%Analisi performance con l'implementazione
+	%Commentare i risultati, perché alcuni sono 4% altri 150%
+	
+	\chapter{Conclusioni}
+	\label{cap:conclusioni}
+	%Lavori futuri e conclusioni
 	
 	\bibliographystyle{unsrt}
 	\bibliography{bibliografia}
