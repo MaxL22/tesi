@@ -176,10 +176,20 @@
  		\item \textit{Shared Trusted Peripherals}: di norma l'accesso a queste periferiche è consentito solo al TEE, ma questo può concedere temporaneamente l'accesso anche al REE. Il processo di condivisione deve essere comunque gestito da hardware sotto il controllo del TEE.
  	\end{itemize}
  	
+ 	
  	\subsection{Garanzie di Sicurezza}
  	\label{subsec:garanzie}
+ 	Come già detto in precedenza, il termine "Trusted Execution Environment" può fare riferimento ad una moltitudine di prodotti, quindi questi potrebbero variare in termini di garanzie di sicurezza che forniscono. Per questo motivo GlobalPlatform ha definito all'interno del \textit{Protection Profile} \cite{gp2020protectionprofile} i requisiti minimi di sicurezza che un TEE deve avere per poter essere certificato. Nonostante le proprietà indicate rappresentino una linea base minima, non è detto che un TEE non possa implementarne altre.
  	
+ 	\bigbreak
  	
+ 	In generale si può affermare che un TEE dovrebbe garantire le proprietà di integrità e confidenzialità del codice e di ciò che esso crea, e garantire esecuzione isolata rispetto al REE.
+ 	
+ 	Come già visto per altri documenti, GlobalPlatform non stabilisce implementazioni precise ma fornisce solo delle direttive. Nonostante ciò, all'atto pratico si hanno alcune caratteristiche comuni alla maggior parte dei TEE, come l'utilizzo di firme digitali per l'autenticazione del codice e l'utilizzo di supporto hardware per realizzare l'isolamento.
+ 	
+ 	\paragraph{Isolamento:}
+ 	
+ 	\paragraph{Integrità e autenticità:}
  	
  	\section{Applicazioni dei TEE}
  	\label{sec:applicazioni}
