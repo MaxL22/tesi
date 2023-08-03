@@ -187,12 +187,69 @@
  	
  	Come già visto per altri documenti, GlobalPlatform non stabilisce implementazioni precise ma fornisce solo delle direttive. Nonostante ciò, all'atto pratico si hanno alcune caratteristiche comuni alla maggior parte dei TEE, come l'utilizzo di firme digitali per l'autenticazione del codice e l'utilizzo di supporto hardware per realizzare l'isolamento.
  	
- 	\paragraph{Isolamento:}
+ 	\bigbreak
  	
- 	\paragraph{Integrità e autenticità:}
+ 	\paragraph{Isolamento:} la separazione del sistema in zone isolate al fine di garantire la proprietà di isolamento non è nuova, in quanto già proposta da J.M. Rushby nel 1981 \cite{rushby1981separationkernel}. 
+ 	
+ 	Rushby infatti metteva in evidenza come un sistema distribuito permetta di gestire la sicurezza tramite separazione fisica delle parti e mediazione di funzioni fidate.
+ 	
+ 	Questo concetto può essere esteso ad una singola macchina, la quale viene vista come sistema distribuito di componenti indipendenti, i quali quindi permettono di ritenere le proprietà di sicurezza di un sistema distribuito.
+ 	
+ 	Nel mondo TEE questa idea viene ripresa tramite l'implementazione di un \textit{separation kernel}, l'elemento usato per simulare un sistema distribuito, come evidenziato da Sabt et al \cite{sabt2015tee}. Questo permette la coesistenza di diversi sistemi, con diversi requisiti di sicurezza, sulla stessa piattaforma. Fondamentalmente divide il sistema in partizioni e garantisce isolamento tra di esse, tranne per alcune interfacce controllate.
+ 	
+ 	I requisiti di sicurezza generali del separation kernel si possono trovare all'interno del \textit{Separation Kernel Protection Profile} (SPKK) \cite{spkk2007}, ma si possono riassumere in quattro policy di sicurezza principali: 
+ 	\begin{itemize}
+ 		\item \textit{Data (spatial) separation:} dati all'interno di una partizione non possono essere letti o modificati da altre partizioni.
+ 		\item \textit{Sanitization (temporal separation):} le risorse condivise non devono permettere la fuoriuscita di informazioni ad altre partizioni.
+ 		\item \textit{Control of information flow:} la comunicazione tra partizioni deve sempre essere espressa esplicitamente.
+ 		\item \textit{Fault isolation:} falle di sicurezza in una partizione non devono poter condizionare le altre.
+ 	\end{itemize}
+ 	
+ 	La separazione di servizi importanti e dati sensibili permette di minimizzare la possibile superficie d'attacco di un sistema, in quanto la compromissione di un componente non causa danni alle altre parti del sistema. L'unica eccezione sarebbe un fallimento del separation kernel stesso, che per questo motivo deve rimanere più semplice possibile. 
+ 	
+ 	Nella pratica il sistema distribuito descritto da Rushby si compone di due sole componenti, REE e TEE, in quanto tutte le implementazioni effettive prevedono un solo TEE.
+ 	
+ 	\newpage
+ 	
+ 	\paragraph{Integrità e autenticità:} i benefici di protezione durante l'esecuzione dati dall'isolamento vengono annullati se non sono garantite integrità ed autenticità del codice, in quanto modifiche a dispositivo spento permetterebbero la compromissione del sistema.
+ 	
+ 	\bigbreak
+ 	
+ 	Per effettuare questa verifica è necessario un \textit{TEE Secure Boot}, come definito dal \textit{TEE System Architecture} \cite{gp2020systemarchitecture}. Questo è un processo di autenticazione di tutto il software che andrà dentro al TEE, ad eccezione del primissimo codice eseguito per il boot, scritto su una memoria ROM, impossibile da sovrascrivere, la cui integrità è quindi intrinsecamente garantita.
+ 	
+ 	\bigbreak
+ 	
+ 	Ogni componente caricato permette di verificare e caricare il componente successivo, come mostrato in \figurename~\ref{fig:tee-secure-boot}. La verifica può essere implementata, ad esempio, tramite un meccanismo di autentecazione basato su coppie di chiavi, che permettono di firmare e verificare l'hash del codice da caricare. Questo permette di garantire che un ente fidato abbia approvato quel software.
+ 	
+ 	Il firmware del dispositivo deve però conoscere le chiavi pubbliche necessarie per poter verificare la firma dei software da caricare, ma si tratta di un dettaglio implementativo dipendente dal sistema.
+ 	
+ 	\bigbreak
+ 	
+ 	Prima di uscire dal processo di boot il firmware può verificare il boot loader del REE prima della sua esecuzione. In caso di fallimento di verifica di qualsiasi dei componenti prima di questo generalmente il dispositivo termina il processo e viene riavviato, altrimenti continua con l'esecuzione del REE boot loader.
+ 	
+ 	\bigbreak
+ 	
+ 	Questo processo non è dissimile da quello di un \textit{Secure Boot} tradizionale, con le differenze che in un TEE questo processo non termina con l'avvio del sistema operativo e non verifica solo il processo, ma anche il software che andrà in esecuzione sul sistema.
+ 	
+ 	\begin{figure}
+ 		\centering
+ 		\includegraphics[width=1\textwidth]{immagini/TEE_Secure_Boot}
+ 		\caption{
+ 			Esempio di TEE Secure Boot. 
+ 			Da \textit{GlobalPlatform TEE System Architecture pag. 73}
+ 			\cite{gp2020systemarchitecture}
+ 		}
+ 		\label{fig:tee-secure-boot}
+ 	\end{figure}
+ 	
+ 	\newpage
  	
  	\section{Applicazioni dei TEE}
  	\label{sec:applicazioni}
+	
+	
+	
+	
 	
 	\section{Supporto Hardware per i TEE}
 	\label{sec:supporto-hw}
