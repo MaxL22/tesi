@@ -254,8 +254,23 @@
 	
 	Però, tramite l'adozione sempre più vasta degli standard GlobalPlatform e lo sviluppo di TEE open-source come OP-TEE \cite{optee}, si ha una crescente tendenza ad aprire la possibilità a più sviluppatori di implementare i propri TEE e permettere un uso sempre più vasto di questa tecnologia da parte di tutti.
 	
-	\subsection{Secure Storage}
+	
+	\subsection{Archiviazione Sicura}
 	\label{subsec:secure-storage}
+	Una delle applicazioni più comuni dei TEE è il secure storage, ovvero un meccanismo che consente di proteggere e preservare dati sensibili e critici all'interno di un ambiente altamente affidabile e isolato. Il TEE fornisce una zona sicura all'interno del dispositivo in cui i dati possono essere memorizzati e gestiti in modo sicuro, garantendo la privacy e la riservatezza delle informazioni.
+	
+	Vengono spesso utilizzati per memorizzare sui dispositivi mobili elementi quali chiavi crittografiche, credenziali di autenticazione, certificati digitali, informazioni finanziarie ed altri dati personali.
+	
+	\bigbreak
+	
+	L'implementazione Android del secure storage è \textit{Android Keystore} \cite{androidkeystore}, che fa ampio uso del sistema \textit{Trusty TEE} \cite{androidtrustytee}, basato su ARM TrustZone. Questo sistema offre una API per gestire in modo sicuro e protetto le chiavi e i certificati all'interno del TEE, in modo da permettere alle applicazioni di usarlo per operazioni di crittografia, firma digitale e autenticazione.
+	
+	Inoltre, il sistema Android Keystore offre funzionalità avanzate, come la generazione delle chiavi direttamente all'interno del TEE, senza mai esporre le chiavi al sistema operativo principale. 
+	
+	\bigbreak
+	
+	GlobalPlatform ha definito delle specifiche per la gestione del secure storage, ovvero il \textit{Secure Element Access Control} \cite{gp2020seac}, stabilendo un framework standardizzato per la gestione e protezione dati all'interno del TEE. Un'implementazione comune prevede l'utilizzo di chiavi crittografiche generate e archiviate all'interno del TEE, le quali vengono utilizzate per crittografare i dati sensibili e per proteggere l'accesso al secure storage.
+	
 	
 	\subsection{Protezione Contenuti Multimediali (DRM)}
 	\label{subsec:drm}
@@ -271,7 +286,8 @@
 	% 	DRM
 	% 	Autenticazione (biometrica)
 	% 	Protezione dati in cloud
-	%	Altri usi? 
+	% 	Mobile Financial Services ? 
+	%	Altri usi
 	
 	
 	
