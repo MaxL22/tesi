@@ -271,20 +271,36 @@
 	
 	GlobalPlatform ha definito delle specifiche per la gestione del secure storage, ovvero il \textit{Secure Element Access Control} \cite{gp2020seac}, stabilendo un framework standardizzato per la gestione e protezione dati all'interno del TEE. Un'implementazione comune prevede l'utilizzo di chiavi crittografiche generate e archiviate all'interno del TEE, le quali vengono utilizzate per crittografare i dati sensibili e per proteggere l'accesso al secure storage.
 	
+	\bigbreak 
+	
+	Inoltre ci sono alcune implementazioni di \textit{Trusted Platform Module} (TPM) all'interno dei TEE, tramite la funzionalità del Secure Storage. Normalmente il TPM costituisce un componente hardware distinto dal resto del sistema, concepito con obiettivi quali la generazione e la conservazione di chiavi crittografiche, la firma e l'autenticazione sicure, nonché la misurazione dell'integrità del sistema.
+	
+	Le caratteristiche fisiche e le garanzie di sicurezza offerte da un TPM risultano quindi analoghe a quelle precedentemente descritte per un TEE, mentre l'integrazione del TPM all'interno di quest'ultimo consente di evitare il costo dell'hardware tipicamente richiesto per un chip TPM indipendente.
 	
 	\subsection{Protezione Contenuti Multimediali (DRM)}
 	\label{subsec:drm}
+	Nell'era digitale, l'accesso, la distribuzione e la protezione dei contenuti digitali sono diventati elementi cruciali per le industrie dell'intrattenimento, dei media e delle comunicazioni. Tuttavia, con l'aumento della pirateria e delle violazioni dei diritti d'autore, è diventato essenziale sviluppare soluzioni di Digital Rights Management (DRM) sempre più sofisticate per garantire la sicurezza dei contenuti e proteggere i diritti dei creatori e dei detentori dei contenuti stessi.
 	
-	\subsection{Protezione Dati in Cloud}
+	\bigbreak
+	
+	Per questo motivo l'utilizzo di sistemi come \textit{Widevine} \cite{widevine} e \textit{PlayReady} \cite{playready} permette di sfruttare l'ambiente TEE (con il loro più alto livello di protezione) per funzionalità quali cifratura del flusso video, verifica delle licenze digitali, autenticazione del dispositivo e protezione contro la copia non autorizzata. Permette anche di mostrare a schermo il video senza che altre applicazioni esterne al TEE possano leggerne i contenuti, a patto che sia presente un canale di comunicazione fidato tra TEE e display, quindi indipendente dal resto del sistema.
+	
+	Questo permette di garantire che i contenuti video siano accessibili solo da dispositivi e applicazioni autorizzati, proteggendo così i diritti dei detentori dei contenuti e i loro partner di distribuzione. 
+	
+	\subsection{Garanzie di Sicurezza nel Cloud Computing}
 	\label{subsec:protezione-cloud}
+	Il cloud computing è un modello di erogazione servizi informatici il quale consente l'accesso on-demand a tramite Internet, senza la necessità di gestire fisicamente l'infrastruttura e sfruttando le risorse richieste in modo estremamente efficiente e scalabile.
+	
+	Con questo modello sorgono però altre problematiche di sicurezza; ad esempio, il cloud provider deve poter gestire la macchina in quanto mantenitore dell'infrastruttura, ma questo significa anche che ha la capacità di poter leggere tutti i dati presenti in memoria.
+	
+	Inoltre un elemento fondamentale alla scalabilità del modello è l'utilizzo di una sola macchina fisica per molteplici macchine virtuali (VM), possibilmente assegnate ad altrettanti clienti. Questo significa che più clienti condividono la stessa memoria fisica, aprendo la porta a possibili attacchi che eludono le misure messe in atto per l'isolamento di una VM dalle altre, come già successo \cite{vmescape1} \cite{vmescape2} \cite{vmescape3}. In questo modo gli attaccanti avrebbero modo di accedere ai dati presenti all'interno delle altre macchine virtuali ed in alcuni casi anche di manipolare le informazioni presenti per i loro scopi.
+	
 	
 	\subsection{Altri Usi}
 	\label{subsec:altri-usi}
 	
 	%Subsections: 
-	% 	Secure Storage
-	% 	DRM
-	% 	Autenticazione (biometrica)
+	% 	Autenticazione (biometrica) ? 
 	% 	Protezione dati in cloud
 	% 	Mobile Financial Services ? 
 	%	Altri usi
@@ -293,7 +309,7 @@
 	
 	
 	
-	\section{Supporto Hardware per i TEE}
+	\section{Implementazioni Hardware per i TEE}
 	\label{sec:supporto-hw}
 	Da scrivere tutti i tipi di TEE (quelli scritti sopra, sgx, sev, trustzone, processori dedicati, TEE RISC-V) ed il relativo hardware
 	
@@ -305,8 +321,6 @@
 	\chapter{TEE in Ambiente Cloud}
 	\label{cap:problema}
 	Virttee design problems, problema nel portare roba in cloud e come risolverli. Problematiche e come sono state affrontate. Componenti senza implementazione, mettere schemi di funzionamento
-	
-	
 	
 	\chapter{Sicurezza dei Dati}
 	\label{cap:implementazione}
