@@ -293,25 +293,30 @@
 	
 	Con questo modello sorgono però altre problematiche di sicurezza; ad esempio, il cloud provider deve poter gestire la macchina in quanto mantenitore dell'infrastruttura, ma questo significa anche che ha la capacità di poter leggere tutti i dati presenti in memoria.
 	
-	Inoltre un elemento fondamentale alla scalabilità del modello è l'utilizzo di una sola macchina fisica per molteplici macchine virtuali (VM), possibilmente assegnate ad altrettanti clienti. Questo significa che più clienti condividono la stessa memoria fisica, aprendo la porta a possibili attacchi che eludono le misure messe in atto per l'isolamento di una VM dalle altre, come già successo \cite{vmescape1} \cite{vmescape2} \cite{vmescape3}. In questo modo gli attaccanti avrebbero modo di accedere ai dati presenti all'interno delle altre macchine virtuali ed in alcuni casi anche di manipolare le informazioni presenti per i loro scopi.
+	Inoltre un elemento fondamentale alla scalabilità del modello è l'utilizzo di una sola macchina fisica per molteplici macchine virtuali (VM), possibilmente assegnate ad altrettanti clienti. Questo significa che più clienti condividono la stessa memoria fisica, aprendo la porta a possibili attacchi che eludono le misure messe in atto per l'isolamento di una VM dalle altre, come già successo \cite{vmescape1} \cite{vmescape2} \cite{vmescape3}. In questo modo gli attaccanti avrebbero modo di accedere ai dati presenti all'interno delle altre macchine virtuali ed in alcuni casi anche di manipolareil codice per i loro scopi.
 	
+	\bigbreak
+	
+	In un tale ambiente è normale che un'organizzazione possa ricercare metodi per garantire che il codice eseguito in remoto sia effettivamente quello desiderato. I TEE permettono di implementare sistemi di attestazione remota del codice, generalmente realizzati tramite una TA o meccanismi hardware che generano un report firmato digitalmente sullo stato di esecuzione della macchina. La chiave privata rimane solamente all'interno del TEE, garantendone la sicurezza.
 	
 	\subsection{Altri Usi}
 	\label{subsec:altri-usi}
+	Oltre alle applicazioni precedentemente menzionate, i TEE hanno stimolato proposte e trovato impieghi in una vasta gamma di settori, abbracciando un'ampia varietà di utilizzi e applicazioni.
 	
-	%Subsections: 
-	% 	Autenticazione (biometrica) ? 
-	% 	Protezione dati in cloud
-	% 	Mobile Financial Services ? 
-	%	Altri usi
+	\bigbreak
 	
+	Nel mondo IoT ci sono state proposte decentralizzare la gestione dei dati utilizzando TEE e smart contract \cite{iotblockchain}. L'idea è quella di un sistema in cui i permessi di accesso vengono applicati tramite smart contract, memorizzando la cronologia di eventi di accesso ai dati nella blockchain. In questo modo le interazioni non necessitano di un sistema centralizzato, in quanto gli smart contract permettono a più parti di specificarne le regole. Infine fornisce un framework che memorizza l'hash dei dati nella blockchain e archivia i dati grezzi all'interno del TEE.
 	
+	\bigbreak
 	
+	Un altro esempio è l'implementazione di un protocollo Vehicle-to-Vehicle (V2V) che permette di fornire autenticazione, privacy e resistenza alla manomissione ad i collegamenti tra veicoli a guida autonoma \cite{teeuses_vehicles}. In questo modo, tramite l'utilizzo dei TEE, si previene l'intercettazione e manomissione dei dati, pur mantenendo l'efficienza e scalabilità necessarie per un sistema tale.
 	
+	\newpage
 	
 	\section{Implementazioni Hardware per i TEE}
 	\label{sec:supporto-hw}
 	Da scrivere tutti i tipi di TEE (quelli scritti sopra, sgx, sev, trustzone, processori dedicati, TEE RISC-V) ed il relativo hardware
+	
 	
 	\section{Vulnerabilità Comuni}
 	\label{sec:vulnerabilità}
