@@ -351,6 +351,29 @@
 	
 	\subsection{AMD SEV}
 	\label{subsec:sev}
+	AMD Secure Encrypted Virtualization è una tecnologia introdotta nel 2016 come estensione dell'architettura x86 progettata per offrire isolamento per la memoria di macchine virtuali (VM). Anche se comunemente l'hypervisor viene considerato un componente fidato nel modello di sicurezza della virtualizzazione, tuttavia può non essere sempre così, come ad esempio in ambiente cloud, dove i clienti potrebbero volere una maggiore confidenzialità dei loro dati, normalmente accessibili al service provider.
+	
+	Per questo motivo AMD SEV permette di crittografare in modo granulare la memoria associata a una specifica macchina virtuale, conferendole un livello di inaccessibilità anche per l'hypervisor stesso. La cifratura dei dati in memoria è affidata ad un chip hardware AES-128. Comunque esiste la possibilità da parte della VM di condividere determinate pagine con l'hypervisor.
+	
+	In aggiunta, sulla scheda madre, trova posto un processore ARM denominato \textit{Secure Processor} (SP), con un suo firmware proprietario. Questo componente assume responsabilità diverse, tra cui spicca la gestione delle chiavi crittografiche, ognuna delle quali è unica per una singola VM. Questo processore fornisce delle API che l'hypervisor deve utilizzare per gestire le chiavi.
+	Il SP permette anche un processo di attestazione remota, per aver modo di verificare che le VM in esecuzione siano effettivamente quelle desiderate, all'interno dell'ambiente corretto. Il report generato contiene tutte le informazioni necessarie per verificarlo e viene firmato tramite una chiave privata presente solamente all'interno del processore, la quale corrispondente pubblica viene fornita da AMD.
+	
+	\bigbreak
+	
+	Partendo da una nuova VM, prima di andare in esecuzione con SEV, questa passa da tre stati, il primo dei quali è UNINIT. In questa fase, con il supporto dell'hypervisor, viene effettuato lo scambio di chiavi con il SP (di tipo ECDH). 
+	
+	Una volta terminato passa allo stato LUPDATE, nel quale vengono caricati e crittografati i dati da inserire all'interno della VM. Al termine di questo viene calcolato un HMAC per verificare che i dati iniziali non sono stati modificati e passa allo stato LSECRET.
+	
+	Questo stato permette di passare dati già criptati, quindi che necessitano confidenza più elevata, alla VM. Rimane l'hypervisor come intermediario, che però non può effettuare modifiche/azioni significative con i dati passati. 
+	
+	Al termine di questo stato la VM passa in modalità di esecuzione regolare.
+	
+	\bigbreak
+	
+	In seguito AMD ha rilasciato versioni aggiornate di SEV, la prima delle quali nel 2017: SEV-ES (Encrypted State) \cite{sev_es}, incentrata sulla crittografia dello stato dell'architettura delle CPU, criptando anche registri interni, page table e altre strutture interne. Prima di questo SEV salvava in chiaro i registri di una VM dopo un context switch con l'hypervisor.
+	
+	Nel 2021 viene rilasciata SEV-SNP (Secure Nested Paging), introdotta per migliorare la sicurezza nelle architetture di multi-tenant e cloud. Introduce una nuova tabella di pagine crittografata all'interno di ogni VM che garantisce l'isolamento tra VM diverse. Le VM non possono accedere alle tabelle di pagine l'una dell'altra.
+	
 	
 	\subsection{Arm TrustZone}
 	\label{subsec:trustzone}
