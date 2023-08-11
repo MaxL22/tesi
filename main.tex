@@ -315,9 +315,39 @@
 	
 	\section{Implementazioni Hardware per i TEE}
 	\label{sec:supporto-hw}
+	Affinché un TEE possa soddisfare le proprietà di sicurezza necessarie, è fondamentale che esso disponga di un supporto hardware adeguato. Ad esempio, un requisito critico che necessita tale sostegno è la proprietà di isolamento rispetto al resto del sistema.
+	
+	Esistono moltemplici soluzioni per implementare queste proprietà, perciò in questo capitolo verranno esplorate brevemente alcune delle principali proposte sul mercato.
 	
 	\subsection{Intel SGX}
 	\label{subsec:sgx}
+	Intel Software Guard Extensions (SGX) è un'estensione dell'architettura x86 sviluppata da Intel per introdurre un ambiente di esecuzione protetto all'interno dei processori. Viene introdotta nel 2015 con la sesta generazione di processori Intel Core.
+	
+	SGX consiste in un insieme di istruzioni hardware e strutture di memoria che consentono la creazione e l'isolamento di \textit{enclavi} sicure all'interno del processore, ovvero piccole zone di memoria crittografate e protette tramite meccanismi hardware. Per l'accesso a queste zone di memoria è necessario utilizzare i nuovi metodi introdotti da SGX, come ad esempio l'istruzione \texttt{ECREATE} permette di creare un'istanza di enclave, mentre l'istruzione \texttt{ECALL} consente alle applicazioni di interagire con il codice all'interno dell'enclave in modo controllato e sicuro. 
+	
+	Le istruzioni che introduce sono comparabili a quelle per cambiare da user mode a kernel mode. Le enclavi vengono sempre eseguite al ring 3 di privilegio (il più basso) ed utilizzano la traduzione degli indirizzi fornita da kernel e hypervisor.
+	
+	\bigbreak
+	
+	Come descritto da \cite{sgx_explained}, all'avvio del sistema SGX riserva una porzione di memoria designata come \textit{Processor Reserved Memory} (PRM). Tale area di memoria risulta inaccessibile a tutte le richieste di accesso che non sono riconducibili a un contesto di enclave. Questo ambito di restrizione si estende anche ad elementi quali kernel, hypervisor, System Management Mode (SMM) e Direct Memory Access (DMA).
+	
+	All'interno di questa zona di memoria si possono trovare la \textit{Enclave Page Cache} (EPC), ovvero pagine di 4KB contenenti codici e dati delle enclavi, oltre all'\textit{Enclave Page Cache Map} (EPCM), la quale serve alla CPU per tracciare lo stato delle pagine all'interno dell'EPC, permettendo di garantire che ciascuna pagina appartenga ad una sola enclave. Quest'ultima è sempre inaccessibile, indipendentemente dal livello di privilegio.
+	
+	\bigbreak
+	
+	Un'enclave viene creata tramite l'istruzione \texttt{ECREATE}, la quale inserisce in una pagina libera dell'EPC la \textit{SGX Enclave Control Structure} (SECS). Quest'ultima andrà a contenere informazioni di controllo e metadati relativi all'enclave stessa, come dimensione, base address ed altre proprietà. L'identità di un'enclave è strettamente legata alla sua SECS, in quanto la entry che identifica l'enclave all'interno della EPCM punta alla SECS della stessa. Il sistema usa l'indirizzo virtuale della SECS per identificare l'enclave quando vengono utilizzate istruzioni di SGX.
+	
+	In seguito il sistema utilizza l'istruzione \texttt{EADD} per caricare codice e dati iniziali all'interno dell'enclave. I dati vengono letti da una struttura chiamata \textit{Page Information} (PAGEINFO), la quale contiene l'indirizzo della pagina EPC da allocare e l'indirizzo della pagina sorgente che andrà copiata nella EPC.
+	
+	In seguito ad aver caricato i dati necessari, il sistema deve usare una \textit{Launch Enclave} (LE) per ottenere una \textit{EINIT Token Structure}. Tramite l'istruzione \texttt{EINIT} ed il token generato la SECS in questione viene segnata come inizializzata.
+	
+	Alla fine del processo di vita di un'enclave l'istruzione \texttt{EREMOVE} permette la deallocazione delle pagine utilizzate dall'enclave all'interno della ECP.
+	
+	La LE è un'enclave privilegiata fornita da Intel, firmata con una chiave presente nell'implementazione di SGX quindi esente dal richiedere un EINIT Token. Questa permette di verificare l'identità di un'enclave in fase di creazione e necessita di informazioni quali chiave di crittografia dell'enclave, politiche di protezione, ecc.
+	
+	\bigbreak
+	
+	A partire dai processori di undicesima e dodicesima generazione Intel SGX è stato deprecato sui processori Intel Core, ma continua lo sviluppo per i processori Xeon, comunemente utilizzati in ambito cloud e server.
 	
 	\subsection{AMD SEV}
 	\label{subsec:sev}
