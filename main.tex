@@ -359,6 +359,8 @@
 	
 	In aggiunta, sulla scheda madre, trova posto un processore ARM denominato \textit{Secure Processor} (SP), contenente un firmware proprietario. Questo componente assume responsabilità diverse, tra cui la gestione delle chiavi crittografiche. Inoltre fornisce delle API che l'hypervisor deve utilizzare per gestire le chiavi.
 	
+	\bigbreak
+	
 	Il SP permette anche un processo di attestazione remota, per aver modo di verificare che le VM in esecuzione presenti in un ambiente remoto siano effettivamente quelle desiderate e che queste siano all'interno dell'ambiente corretto. Viene generato un report contenente tutte le informazioni necessarie per verificarlo, come ad esempio dati iniziali della macchina e policy di sicurezza applicate. In seguito viene firmato tramite una chiave privata presente solamente all'interno del processore, la quale corrispondente pubblica viene fornita da AMD per verificare l'attendibilità del report.
 	
 	\bigbreak
@@ -369,16 +371,57 @@
 	
 	Questo stato permette di passare dati già criptati, quindi che necessitano confidenza più elevata, alla VM. Rimane l'hypervisor come intermediario, che però non può effettuare modifiche/azioni significative con i dati passati. 
 	
-	Al termine di questo stato la VM passa in modalità di esecuzione regolare.
+	Al termine di questo stato la macchina virtuale può andare in modalità di esecuzione regolare.
 	
 	\bigbreak
 	
 	In seguito AMD ha rilasciato versioni aggiornate di SEV, la prima delle quali nel 2017: SEV-ES (Encrypted State) \cite{sev_es}, incentrata sulla crittografia dello stato dell'architettura delle CPU, criptando anche registri interni, page table e altre strutture interne. Prima di questo SEV salvava in chiaro i registri di una VM dopo un context switch con l'hypervisor.
 	
-	Nel 2021 viene rilasciata SEV-SNP (Secure Nested Paging), introdotta per migliorare la sicurezza nelle architetture di multi-tenant e cloud. Introduce una nuova tabella di pagine crittografata all'interno di ogni VM che garantisce l'isolamento tra VM diverse. Le VM non possono accedere alle tabelle di pagine l'una dell'altra.
+	Nel 2021 viene rilasciata SEV-SNP (Secure Nested Paging) \cite{sev_snp}, introdotta per migliorare la sicurezza nelle architetture di multi-tenant e cloud. Introduce una nuova tabella di pagine crittografata all'interno di ogni VM che garantisce l'isolamento tra VM diverse. Le VM non possono accedere alle tabelle di pagine l'una dell'altra.
+	
+	\newpage
 	
 	\subsection{Arm TrustZone}
 	\label{subsec:trustzone}
+	ARM TrustZone è una tecnologia di sicurezza introdotta nel 2004 e integrata nei processori ARM, che sono ampiamente utilizzati in dispositivi mobili, dispositivi IoT (Internet of Things) e altri sistemi embedded. L'obiettivo principale di TrustZone è creare un ambiente sicuro all'interno di un singolo processore, in modo che diverse parti del sistema possano operare in modalità sicura o non sicura, a seconda delle esigenze, senza compromettere la sicurezza dei dati e delle operazioni.
+	
+	TrustZone divide il processore in due mondi distinti: "\textit{Secure}" e "\textit{Non-Secure}", i quali operano in parallelo, con risorse distinte per ogni ambiente e separate in modo hardware. Questo fornisce un ambiente in cui è possibile eseguire software critico e operazioni di sicurezza in modo isolato dal resto del sistema.
+	
+	All'interno di ARM sono presenti 4 livelli di privilegio, da EL0 (più basso) a EL3 (più alto). Il livello più alto viene utilizzato dal sistema per il passaggio da mondo \textit{Secure} e \textit{Non-secure}. Questo livello rappresenta il \textit{separation kernel} descritto precedentemente (\ref{subsec:garanzie}).
+	
+	Il software che gestisce il passaggio, sui processori serie Cortex-A, è chiamato "\textit{Secure Monitor}". Sui dispositivi dotati di Cortex-M non è presente in quanto il passaggio da un mondo all'altro è implementato direttamente all'interno della logica del processore. In entrambi i casi si ha una separazione completa e garantita a livello hardware.
+	
+	\bigbreak
+	
+	Il processore può trovarsi in solo uno dei mondi e lo stato attuale può essere rilevato tramite un nuovo bit presente sul bus dati, il \textit{Non-Secure} (NS) bit. Quest'ultimo può essere letto tramite il \textit{Secure Configuration Register} (SCR), il quale contiene vari flag e bit che controllano il comportamento del sistema. 
+	
+	Inoltre il firmware deve implementare un modo per gestire la \textit{Secure Monitor Call} (SMC), l'istruzione che permette di entrare in "\textit{monitor mode}" e cambiare la modalità del processore. Funziona similmente ad una system call: quando chiamata tramite il suo codice specifico passa al livello di privilegio EL3 e invoca un handler implementato nel firmware, all'interno della tabella degli interrupt del processore.
+	Il firmware a livello EL3 è anche incaricato di caricare i sistemi operativi del mondo sicuro e normale.
+	
+	
+	\bigbreak
+	
+	TrustZone estende anche l'infrastruttura di memoria con alcune funzionalità di sicurezza, in particolare: \textit{TrustZone Address Space Controller} (TZASC) e \textit{TrustZone Memory Adapter} (TZMA).
+	
+	Il TZASC permette partizionare la DRAM e marcare specifiche regioni di memoria come sicure o non-sicure, in modo che applicazioni nel secure world possano accedere alle regioni associate al mondo normale, ma non in contrario. Il TZMA effettua una funzione simile ma su altre memorie come ROM o SRAM.
+	
+	Queste componenti sono opzionali, quindi la loro presenza e la granularità al quale possono agire dipende dall'implementazione.
+	
+	\bigbreak 
+	
+	All'interno di TrustZone non viene effettuata nessuna verifica dell'integrità del codice all'avvio, onere lasciato ai produttori.
+	
+	Una soluzione comune è avere una coppia di chiavi pubblica e privata, presenti all'interno del chip. Il codice viene caricato assieme ad un suo hash, firmato con la chiave pubblica e poi il tutto viene confrontato con la chiave stampata nel chip.
+	
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=0.8\textwidth]{immagini/ARM_TZ_Levels}
+		\caption{
+			Livelli di privilegio di ARM TrustZone. Da \textit{"ARM Cortex-A Series Programmer's Guide for ARMv8-A"}
+			\cite{arm_programmers_manual}
+		}
+		\label{fig:arm-exception-levels}
+	\end{figure}
 	
 	\subsection{TEE RISC-V}
 	\label{subsec:riscv}
