@@ -323,15 +323,17 @@
 	\label{subsec:sgx}
 	Intel Software Guard Extensions (SGX) è un'estensione dell'architettura x86 sviluppata da Intel per introdurre un ambiente di esecuzione protetto all'interno dei processori. Viene introdotta nel 2015 con la sesta generazione di processori Intel Core.
 	
-	SGX consiste in un insieme di istruzioni hardware e strutture di memoria che consentono la creazione e l'isolamento di \textit{enclavi} sicure all'interno del processore, ovvero piccole zone di memoria crittografate e protette tramite meccanismi hardware. Per l'accesso a queste zone di memoria è necessario utilizzare i nuovi metodi introdotti da SGX, come ad esempio l'istruzione \texttt{ECREATE} permette di creare un'istanza di enclave, mentre l'istruzione \texttt{ECALL} consente alle applicazioni di interagire con il codice all'interno dell'enclave in modo controllato e sicuro. 
+	SGX consiste in un insieme di istruzioni hardware e strutture di memoria che consentono la creazione e l'isolamento di \textit{enclavi} sicure all'interno del processore, ovvero zone di memoria di dimensione ridotta crittografate e protette tramite meccanismi hardware. 
 	
-	Le istruzioni che introduce sono comparabili a quelle per cambiare da user mode a kernel mode. Le enclavi vengono sempre eseguite al ring 3 di privilegio (il più basso) ed utilizzano la traduzione degli indirizzi fornita da kernel e hypervisor.
+	Per l'accesso a queste zone di memoria è necessario utilizzare i nuovi metodi introdotti da SGX, come ad esempio l'istruzione \texttt{ECREATE} permette di creare un'istanza di enclave, mentre l'istruzione \texttt{ECALL} consente alle applicazioni di interagire con il codice all'interno dell'enclave in modo controllato e sicuro. 
+	
+	Le istruzioni introdotte sono comparabili a quelle per il passaggio da user mode a kernel mode. Le enclavi vengono sempre eseguite al ring 3 di privilegio (il più basso) ed utilizzano la traduzione degli indirizzi fornita da kernel e hypervisor.
 	
 	\bigbreak
 	
 	Come descritto da \cite{sgx_explained}, all'avvio del sistema SGX riserva una porzione di memoria designata come \textit{Processor Reserved Memory} (PRM). Tale area di memoria risulta inaccessibile a tutte le richieste di accesso che non sono riconducibili a un contesto di enclave. Questo ambito di restrizione si estende anche ad elementi quali kernel, hypervisor, System Management Mode (SMM) e Direct Memory Access (DMA).
 	
-	All'interno di questa zona di memoria si possono trovare la \textit{Enclave Page Cache} (EPC), ovvero pagine di 4KB contenenti codici e dati delle enclavi, oltre all'\textit{Enclave Page Cache Map} (EPCM), la quale serve alla CPU per tracciare lo stato delle pagine all'interno dell'EPC, permettendo di garantire che ciascuna pagina appartenga ad una sola enclave. Quest'ultima è sempre inaccessibile, indipendentemente dal livello di privilegio.
+	All'interno di questa zona di memoria si possono trovare la \textit{Enclave Page Cache} (EPC), ovvero pagine di 4KB contenenti codici e dati delle enclavi, oltre all'\textit{Enclave Page Cache Map} (EPCM), la quale viene utilizzata dalla CPU per tracciare lo stato delle pagine all'interno dell'EPC, permettendo di garantire che ciascuna pagina appartenga ad una sola enclave. Quest'ultima è sempre inaccessibile, indipendentemente dal livello di privilegio.
 	
 	\bigbreak
 	
@@ -353,10 +355,11 @@
 	\label{subsec:sev}
 	AMD Secure Encrypted Virtualization è una tecnologia introdotta nel 2016 come estensione dell'architettura x86 progettata per offrire isolamento per la memoria di macchine virtuali (VM). Anche se comunemente l'hypervisor viene considerato un componente fidato nel modello di sicurezza della virtualizzazione, tuttavia può non essere sempre così, come ad esempio in ambiente cloud, dove i clienti potrebbero volere una maggiore confidenzialità dei loro dati, normalmente accessibili al service provider.
 	
-	Per questo motivo AMD SEV permette di crittografare in modo granulare la memoria associata a una specifica macchina virtuale, conferendole un livello di inaccessibilità anche per l'hypervisor stesso. La cifratura dei dati in memoria è affidata ad un chip hardware AES-128. Comunque esiste la possibilità da parte della VM di condividere determinate pagine con l'hypervisor.
+	Al fine di risolvere questo problema AMD SEV permette di crittografare in modo granulare la memoria associata a una specifica macchina virtuale, conferendole un livello di inaccessibilità anche per l'hypervisor stesso. Ogni VM possiede la sua chiave di crittografia unica. La cifratura dei dati in memoria è affidata ad un chip hardware AES-128. Esiste la possibilità da parte della VM di condividere determinate pagine con l'hypervisor.
 	
-	In aggiunta, sulla scheda madre, trova posto un processore ARM denominato \textit{Secure Processor} (SP), con un suo firmware proprietario. Questo componente assume responsabilità diverse, tra cui spicca la gestione delle chiavi crittografiche, ognuna delle quali è unica per una singola VM. Questo processore fornisce delle API che l'hypervisor deve utilizzare per gestire le chiavi.
-	Il SP permette anche un processo di attestazione remota, per aver modo di verificare che le VM in esecuzione siano effettivamente quelle desiderate, all'interno dell'ambiente corretto. Il report generato contiene tutte le informazioni necessarie per verificarlo e viene firmato tramite una chiave privata presente solamente all'interno del processore, la quale corrispondente pubblica viene fornita da AMD.
+	In aggiunta, sulla scheda madre, trova posto un processore ARM denominato \textit{Secure Processor} (SP), contenente un firmware proprietario. Questo componente assume responsabilità diverse, tra cui la gestione delle chiavi crittografiche. Inoltre fornisce delle API che l'hypervisor deve utilizzare per gestire le chiavi.
+	
+	Il SP permette anche un processo di attestazione remota, per aver modo di verificare che le VM in esecuzione presenti in un ambiente remoto siano effettivamente quelle desiderate e che queste siano all'interno dell'ambiente corretto. Viene generato un report contenente tutte le informazioni necessarie per verificarlo, come ad esempio dati iniziali della macchina e policy di sicurezza applicate. In seguito viene firmato tramite una chiave privata presente solamente all'interno del processore, la quale corrispondente pubblica viene fornita da AMD per verificare l'attendibilità del report.
 	
 	\bigbreak
 	
@@ -373,7 +376,6 @@
 	In seguito AMD ha rilasciato versioni aggiornate di SEV, la prima delle quali nel 2017: SEV-ES (Encrypted State) \cite{sev_es}, incentrata sulla crittografia dello stato dell'architettura delle CPU, criptando anche registri interni, page table e altre strutture interne. Prima di questo SEV salvava in chiaro i registri di una VM dopo un context switch con l'hypervisor.
 	
 	Nel 2021 viene rilasciata SEV-SNP (Secure Nested Paging), introdotta per migliorare la sicurezza nelle architetture di multi-tenant e cloud. Introduce una nuova tabella di pagine crittografata all'interno di ogni VM che garantisce l'isolamento tra VM diverse. Le VM non possono accedere alle tabelle di pagine l'una dell'altra.
-	
 	
 	\subsection{Arm TrustZone}
 	\label{subsec:trustzone}
