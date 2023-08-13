@@ -425,6 +425,21 @@
 	
 	\subsection{TEE RISC-V}
 	\label{subsec:riscv}
+	RISC-V è un Instruction Set Architecture (ISA) sviluppato principalmente dall'Università della California, Berkeley, negli Stati Uniti. Il progetto è nato nel 2010 per poi coinvolgere anche contributori volontari non affiliati all'università. Nel 2015 viene fondata la RISC-V Foundation, creata con il fine di sostenere e promuovere lo sviluppo e l'adozione dell'architettura RISC-V.
+	
+	Diversamente da molti altri ISA, RISC-V è sviluppato sotto licenza open source, quindi l'utilizzo è gratuito. Questo, oltre al buon supporto da parte di toolchain e sistemi operativi, ha permesso di far crescere notevolmente nel tempo l'adozione di RISC-V, coinvolgendo una vasta comunità di aziende, istituti di ricerca e sviluppatori indipendenti. 
+	
+	La possibilità di avere a disposizione uno stack software senza doverlo scrivere da zero o pagare licenze ha reso RISC-V un ambiente interessante per sviluppare hardware, anche in ambito TEE.
+	
+	\bigbreak
+	
+	Data la flessibilità dell'hardware, i progetti esistenti generalmente si concentrano sulla possibilità di creare TEE che rispondano alle proprie esigenze. Per citare alcuni di questi progetti, Penglai \cite{penglai} e Keystone \cite{keystone}. 
+	
+	Le soluzioni esistenti, citate nelle sezioni precedenti, pongono limiti progettuali che possono rendere difficoltoso utilizzare l'ambiente in un modo che sia in linea con le proprie esigenze, a volte forzando gli sviluppatori a creare soluzioni alternative, come ad esempio nel caso di dover eseguire applicazioni non modificate all'interno di SGX \cite{grapheneSGX}.
+	
+	Entrambi i progetti citati precedentemente si basano sullo sfruttare l'isolazione della memoria fornita da RISC-V, chiamata \textit{Physical Memory Protection} (PMP), per ottenere zone di memorie protette da accessi non autorizzati. Utilizzano la \textit{machine mode} (il livello di privilegio più alto di RISC-V) per eseguire un secure monitor con il compito di separare l'ambiente di esecuzione ordinario dalle enclavi sicure create.
+	
+	L'idea è simile a quelle presentate precedentemente con TrustZone o SGX, ma con minori limiti alla memoria e più possibilità di configurare le enclavi.
 	
 	\subsection{Processori Dedicati}
 	\label{subsec:altri-rpc}
@@ -443,7 +458,6 @@
 	Nome WIP. Dettagli riguardo all'implementazione, soluzioni tecniche trovate
 	%Iniziare con ciò che ha fatto marco? 
 	%Section del capitolo prima?
-	
 	
 	
 	\chapter{Analisi Performance}
