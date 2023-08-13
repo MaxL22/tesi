@@ -443,11 +443,20 @@
 	
 	\subsection{Processori Dedicati}
 	\label{subsec:altri-rpc}
+	Un possibile metodo per integrare un TEE all'interno di un dispositivo è quello di avere un secondo processore collegato solamente alle componenti fidate del sistema. Questa soluzione risulta più costosa, ma si hanno alcuni esempi, in particolare su dispositivi mobili di fascia alta.
+	
+	\bigbreak
+	
+	A partire dal Pixel 3 Google ha incluso all'interno dei suoi telefoni anche processori della serie \textit{Titan M}, basati sull'architettura RISC-V, i quali sono sistemi a tutti gli effetti, contenenti la propria memoria, RAM, acceleratore crittografico e sistema operativo. L'area TrustZone, anch'essa presente, viene utilizzata solamente come ponte per interagire con il chip \textit{Titan M}.
+	
+	Alla base, questo processore è stato pensato come metodo per incrementare le misure di sicurezza standard di Android, normalmente affidate ad un TEE presente sul \textit{System on a Chip} (SoC) principale. Permette quindi di immagazzinare dati sensibili come chiavi crittografiche e dati biometrici, oltre che supportare il processo di Secure Boot e validare la versione di Android in esecuzione.
+	
+	\bigbreak 
+	
+	Apple include nei propri dispositivi un sottosistema chiamato \textit{Secure Enclave}. Esegue funzionalità simili agli altri TEE, permettendo di implementare funzionalità come \textit{Apple Pay} e \textit{Touch ID}. Si tratta di un SoC che esegue una versione modificata del kernel L4, un sistema molto ridotto, con l'aggiunta di servizi e driver proprietari. Inoltre è collegato a periferiche proprie, accessibili tramite MMIO, come acceleratore crittografico e generatore di numeri casuali.
 	
 	\section{Vulnerabilità Comuni}
 	\label{sec:vulnerabilità}
-	
-	
 	
 	\chapter{TEE in Ambiente Cloud}
 	\label{cap:problema}
