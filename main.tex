@@ -457,6 +457,13 @@
 	
 	\section{Vulnerabilità Comuni}
 	\label{sec:vulnerabilità}
+	Per quanto incentrati sulla sicurezza i TEE non sono completamente esenti da vulnerabilità. Nel tempo sono stati trovati diversi attacchi che permettono di aggirare le misure di sicurezza offerte da questi sistemi.
+	
+	\bigbreak 
+	
+	Un primo vettore d'attacco, comune a più soluzioni hardware, coinvolge la cache. Sia SGX che TrustZone e SEV ne sono risultati suscettibili. Nonostante queste soluzioni rendano generalmente inaccessibili i dati tramite metodi convenzionali, la cache non è fisicamente separata dall'ambiente di esecuzione normale. 
+	
+	
 	
 	\chapter{TEE in Ambiente Cloud}
 	\label{cap:problema}
