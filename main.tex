@@ -455,15 +455,38 @@
 	
 	Apple include nei propri dispositivi un sottosistema chiamato \textit{Secure Enclave}. Esegue funzionalità simili agli altri TEE, permettendo di implementare funzionalità come \textit{Apple Pay} e \textit{Touch ID}. Si tratta di un SoC che esegue una versione modificata del kernel L4, un sistema molto ridotto, con l'aggiunta di servizi e driver proprietari. Inoltre è collegato a periferiche proprie, accessibili tramite MMIO, come acceleratore crittografico e generatore di numeri casuali.
 	
-	\section{Vulnerabilità Comuni}
+	\section{Vulnerabilità Note}
 	\label{sec:vulnerabilità}
 	Per quanto incentrati sulla sicurezza i TEE non sono completamente esenti da vulnerabilità. Nel tempo sono stati trovati diversi attacchi che permettono di aggirare le misure di sicurezza offerte da questi sistemi.
 	
 	\bigbreak 
 	
-	Un primo vettore d'attacco, comune a più soluzioni hardware, coinvolge la cache. Sia SGX che TrustZone e SEV ne sono risultati suscettibili. Nonostante queste soluzioni rendano generalmente inaccessibili i dati tramite metodi convenzionali, la cache non è fisicamente separata dall'ambiente di esecuzione normale. 
+	La cache permette di porre molti dubbi riguardo la sicurezza del codice all'interno di un processore, in quanto si tratta di un vettore d'attacco comune a più soluzioni hardware. SGX, TrustZone e SEV ne sono risultati suscettibili. Nonostante queste soluzioni rendano generalmente inaccessibili i dati tramite metodi convenzionali, la cache può spesso essere vittima di attacchi side channel.
+	
+	Sfruttando attacchi basati sul \textit{timing} della cache, \textit{ARMageddon} \cite{armageddon} ha permesso l'ottenimento di dati tramite attacchi come \textit{Prime+Probe}, \textit{Flush+Reload}, \textit{Evict+Reload} e \textit{Flush+Flush}, già visti su altre tipologie di processori, raggiungendo un elevato livello di precisione e risoluzione, fino a monitorare l'attività all'interno della cache di TrustZone. All'interno del testo vengono presentate, e risolte, le problematiche poste da ARM per queste tipologie di attacco, come l'eterogenea composizione delle cache e la mancanza di un'istruzione dedicata al flush. Vengono proposte anche possibili contromisure software per, se non impedire, rendere più difficoltoso l'attacco. Un attacco simile viene presentato da \textit{CacheZoom} \cite{cachezoom}, ma sfruttando le vulnerabilità di SGX.
+	
+	Un altra tipologia di attacco trovato alla cache di ARM \cite{aliasdriven} sfrutta possibili configurazioni errate della memoria, le quali permettono ad un attaccante di mappare molteplici indirizzi virtuali ad uno stesso indirizzo fisico, con politiche di memoria incoerenti, ed osservare in che livello della cache questi vengono inseriti. Questo permette di arrivare ad infrangere la confidenzialità dei dati posti in memoria sicura.
+	
+	Un altro modo per sfruttare incoerenze della cache è \textit{CacheKit} \cite{zhang2016cachekit}. Su ARM la separazione delle linee della cache tra TrustZone e mondo normale non permette al mondo sicuro di accedere alla cache del mondo normale. Queste incoerenze possono portare a nascondere la presenza di un rootkit. Il codice rimane nella cache del mondo sicuro, ma non in memoria, permettendo di rimanere invisibile dal normal world.
+	
+	Su AMD SEV invece sono stati trovati problemi con la gestione del Translation Lookaside Buffer (TLB) \cite{li2021tlb}, permettendo poisoning di questa cache. L'estensione su SEV del TLB contiene diverse vulnerabilità che lo rendono non sicuro per il tipo di minacce che SEV stesso si presuppone di prevenire. Infatti l'hypervisor potrebbe essere in grado di effettuare attacchi di TLB Poisoning, con lo scopo di compromettere integrità e confidenzialità delle VM utilizzanti SEV.
+	
+	\bigbreak 
+	
+	Da non sottovalutare anche all'interno dei TEE la possibilità di attacco tramite vulnerabilità del software, come possono essere la mancata validazione degli input e l'overflow di memoria. Queste sono le stesse che si possono presentare in qualsiasi altro software e prevedono le stesse contromisure, ovvero tutte le \textit{best practices} per la sicurezza del software.
+	
+	Un esempio di attacco di questo tipo è stato trovato per il chip Titan M di Google \cite{attack_titanM}. Si tratta di un errore nella copia di un buffer all'interno dell'implementazione per Pixel di Keymaster, il quale permetterebbe di scrivere un byte di memoria in una zona arbitraria. Questo, assieme alla memoria statica del Titan M, permette di estrarre informazioni sicure del TEE.
 	
 	
+	Inoltre, in particolare facendo riferimento ad ARM, la superficie d'attacco visibile all'interno di una TA generalmente è abbastanza estesa, ad esempio è presente una grande quantità di chiamate di sistema del kernel TEE a cui può avere accesso ed in alcuni sistemi una TA può anda re a mappare in qualsiasi zona del sistema operativo ospitante. Una vulnerabilità all'interno di una TA può quindi portare al controllo completo del sistema.
+	
+	\bigbreak
+	
+	Per migliorare i consumi ed il calore generato dai processori esistono tecniche che modificano i valori di frequenza e voltaggio del processore in base al carico di lavoro. Per fare ciò molti processori espongono interfacce privilegiate. Si possono sfruttare queste interfacce per minare la sicurezza del sistema, tramite dei \textit{fault attacks}. Siccome il processore può funzionare correttamente solo in un determinato range di frequenza e voltaggio si può indurre l'hardware a commettere errori, voluti e predeterminati, al fine di estrarre informazioni sensibili.
+	
+	Sono stati trovati attacchi di questo tipo all'interno di SGX (\textit{Plundervolt} \cite{plundervolt}), TrustZone (\textit{CLKscrew} \cite{clkscrew}) e SEV (\cite{sev_power_attack}).
+	
+	Mitigare questi attacchi può non essere semplice, in quanto richiedono aggiornamenti del microcode o modifiche hardware.
 	
 	\chapter{TEE in Ambiente Cloud}
 	\label{cap:problema}
