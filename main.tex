@@ -490,9 +490,31 @@
 	
 	\chapter{TEE in Ambiente Cloud}
 	\label{cap:problema}
-	Virttee design problems, problema nel portare roba in cloud e come risolverli. Problematiche e come sono state affrontate. Componenti senza implementazione, mettere schemi di funzionamento
+	%Virttee design problems, problema nel portare roba in cloud e come risolverli. Problematiche e come sono state affrontate. Componenti senza implementazione, mettere schemi di funzionamento
+	Il \textit{Cloud Computing} rappresenta la nascita di un nuovo modello di servizi il quale permette di utilizzare un'infrastruttura messa a disposizione da un provider, fornendo un'alternativa flessibile e scalabile all'infrastruttura informatica tradizionale basata su server locali. Il concetto di \textit{Infrastructure as a Service} permette di avere una propria applicazione web senza i costi legati al mantenimento della struttura, lasciati al provider.
 	
-	\chapter{Sicurezza dei Dati}
+	\bigbreak
+	
+	Questo però porta nuove preoccupazioni in termini di sicurezza, in quanto tutti i dati devono essere portati su macchine fisiche al di fuori del proprio controllo. Il provider deve essere in grado di accedere alla macchina in quanto necessario per ottimizzare l'utilizzo delle risorse, ma questo può portare ad avere dubbi su cosa avviene ai dati e chi ne ha accesso una volta in esecuzione.
+	
+	Ciò che permette la condivisione di risorse su una stessa macchina è la \textit{virtualizzazione}, avere una macchina virtuale per ogni cliente permette di allocare in modo dinamico la potenza di calcolo e di gestire in modo semplice i dati tra una macchina e l'altra. La suddivisione tra i vari clienti viene resa possibile tramite l'hypervisor, il quale controlla le macchine virtuali su un server fisico.
+	
+	Questo tipo di gestione vuole anche dire che l'hypervisor può avere accesso a tutti i dati delle macchine virtuali e non si hanno garanzie che il provider del servizio sia fidato (seppur sia ragionevole assumerlo nella maggior parte dei casi). Può rappresentare un problema in caso di dati che richiedono una sicurezza maggiore, come può essere nei casi di utilizzo dei TEE.
+	
+	Un altro aspetto che può rivelarsi problematico è la condivisione dello stesso hardware tra clienti diversi. La separazione dovrebbe essere completa ma nel caso in cui un attaccante riuscisse a prendere il controllo o eludere l'hypervisor sarebbe in grado di accedere e possibilmente alterare i dati di tutti gli altri clienti presenti sulla macchina.
+	
+	\section{Passthrough per TEE tra QEMU e Linux}
+	\label{sec:passthrough}
+	In ambiente cloud potrebbe sembrare una soluzione efficace l'utilizzo di un TEE per garantire integrità e confidenzialità dei dati, ma le possibilità di utilizzo dei Trusted Execution Environment all'interno di ambienti virtualizzati risultano limitate. Però questo generalmente richiede un TEE dedicato per ogni cliente, il quale dovrebbe essere in grado di gestirlo. 
+	
+	Inoltre non è sempre fattibile per limitazioni tecniche dovute alla condivisione della macchina.
+	
+	
+	%Da scrivere: 
+	%	Riportare informazioni Passthrough
+	%	Cosa si vuole fare e soluzioni pensate
+	
+	\chapter{Implementazione}
 	\label{cap:implementazione}
 	Nome WIP. Dettagli riguardo all'implementazione, soluzioni tecniche trovate
 	%Iniziare con ciò che ha fatto marco? 
