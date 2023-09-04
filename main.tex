@@ -488,6 +488,14 @@
 	
 	Mitigare questi attacchi può non essere semplice, in quanto richiedono aggiornamenti del microcode o modifiche hardware.
 	
+	\newpage
+
+	\section{OP-TEE}
+	\label{sec:optee}
+	Open Portable Trusted Execution Environment \cite{optee} è un progetto open source nato nel 2013 per fornire un ambiente di esecuzione sicuro e affidabile per architetture ARM, sfruttando la tecnologia TrustZone, anche se è stato strutturato in modo tale da essere compatibile con altre tecnologie hardware che forniscono le funzionalità di un TEE.
+
+	OP-TEE è stato sviluppato per essere compatibile con le specifiche GlobalPlatform, per questo motivo il software presenta caratteristiche architetturali simili.
+
 	\chapter{TEE in Ambiente Cloud}
 	\label{cap:problema}
 	%Virttee design problems, problema nel portare roba in cloud e come risolverli. Problematiche e come sono state affrontate. Componenti senza implementazione, mettere schemi di funzionamento
@@ -503,15 +511,46 @@
 	
 	Un altro aspetto che può rivelarsi problematico è la condivisione dello stesso hardware tra clienti diversi. La separazione dovrebbe essere completa ma nel caso in cui un attaccante riuscisse a prendere il controllo o eludere l'hypervisor sarebbe in grado di accedere e possibilmente alterare i dati di tutti gli altri clienti presenti sulla macchina.
 	
-	\section{Passthrough per TEE tra QEMU e Linux}
+	\section{TEE as a Service}
 	\label{sec:passthrough}
-	In ambiente cloud potrebbe sembrare una soluzione efficace l'utilizzo di un TEE per garantire integrità e confidenzialità dei dati, ma le possibilità di utilizzo dei Trusted Execution Environment all'interno di ambienti virtualizzati risultano limitate. Però questo generalmente richiede un TEE dedicato per ogni cliente, il quale dovrebbe essere in grado di gestirlo. 
+	In ambiente cloud potrebbe sembrare una soluzione efficace l'utilizzo di un TEE per garantire integrità e confidenzialità dei dati, ma si presentano alcune difficoltà, in quanto le possibilità di utilizzo dei Trusted Execution Environment all'interno di ambienti virtualizzati risultano limitate. Il modello tradizionale generalmente richiede un TEE dedicato per ogni cliente, il quale dovrebbe essere in grado di gestirlo.
 	
 	Inoltre non è sempre fattibile per limitazioni tecniche dovute alla condivisione della macchina.
 	
+	\bigbreak
+
+	Per aggirare queste limitazioni tecniche una possibile soluzione sarebbe includere il TEE all'interno del servizio proposto dal provider, permettendo di utilizzare un solo dispositivo fisico per tutti i client presenti sulla macchina. Questo però richiede la condivisione di un singolo TEE con più client virtuali, il che pone alcuni problemi.
+
+	Il metodo presentato da Cutecchia \cite{tesi_cutecchia} per implementare la condivisione è l'utilizzo di un device virtuale, inserito come estensione dell'hypervisor, con il ruolo di intermediario tra TEE fisico ed ambiente virtuale. 
 	
-	%Da scrivere: 
+	\bigbreak
+
+	\begin{figure}[h]
+		\centering
+		\begin{subfigure}{\columnwidth}
+			\centering
+			\includegraphics[width=0.8\linewidth]{immagini/common-cloud-tee-model}
+			\caption{Il modello tradizionale di TEE in ambiente cloud}
+			\label{fig:our-cloud-tee-model}
+		\end{subfigure}
+	
+		\begin{subfigure}{\columnwidth}
+			\centering
+			\includegraphics[width=0.53\linewidth]{immagini/our-cloud-tee-model}
+			\caption{Il modello descritto, con un TEE condiviso tra più VM}
+			\label{fig:our-cloud-tee-model}
+		\end{subfigure}
+		\caption{Confronto tra i due modelli discussi, da \cite{tesi_cutecchia}}
+	\end{figure}
+	
+	In questo modo il TEE diventa parte del servizio fornito dal provider, semplificandone la gestione e l'utilizzo da entrambe le parti.
+
+	% Da scrivere: 
 	%	Riportare informazioni Passthrough
+	%		Sottosistema Linux? Maybe qualche accenno?
+	%		Sicuramente OP-TEE
+	%		Sicuramente implementazione
+	%	Modello dell'ambiente pensato
 	%	Cosa si vuole fare e soluzioni pensate
 	
 	\chapter{Implementazione}
