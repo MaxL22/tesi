@@ -492,9 +492,25 @@
 
 	\section{OP-TEE}
 	\label{sec:optee}
-	Open Portable Trusted Execution Environment \cite{optee} è un progetto open source nato nel 2013 per fornire un ambiente di esecuzione sicuro e affidabile per architetture ARM, sfruttando la tecnologia TrustZone, anche se è stato strutturato in modo tale da essere compatibile con altre tecnologie hardware che forniscono le funzionalità di un TEE.
+	Open Portable Trusted Execution Environment \cite{optee} è un progetto nato nel 2013, anche se sotto un altro nome e come TEE proprietario della ST-Ericsson, per fornire un ambiente di esecuzione open source, sicuro e affidabile per architetture ARM, sfruttando la tecnologia TrustZone, anche se è stato strutturato in modo tale da essere compatibile con altre tecnologie hardware che forniscono le funzionalità di un TEE.
 
-	OP-TEE è stato sviluppato per essere compatibile con le specifiche GlobalPlatform, per questo motivo il software presenta caratteristiche architetturali simili.
+	OP-TEE è stato sviluppato per essere compatibile con le specifiche GlobalPlatform, per questo motivo il software presenta caratteristiche architetturali simili (vedi \figurename~\ref{fig:optee-architecture}). Inoltre si tratta di uno dei due TEE per cui è implementato un driver all'interno del sottosistema Linux, oltre ad AMD Platform Security Processor.
+	
+	\bigbreak 
+	
+	All'interno di OP-TEE è anche presente un supporto (sperimentale) alla virtualizzazione \cite{optee_virtualization}, il quale permette di avere una singola istanza di OP-TEE in grado di eseguire TA richieste da multiple macchine virtuali. Lo stato relativo ad ogni VM è isolato dalle altre in modo che non possano interagire.
+	
+	\bigbreak
+	
+	Per questi motivi si tratta del TEE scelto per il progetto, anche se l'implementazione delle varie componenti non è legata ad un TEE specifico.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\textwidth]{immagini/optee-system-architecture}
+		\caption{ Componenti dell'architettura OP-TEE. Da sinistra verso destra si possono vedere user space, kernel e secure world. Da \textit{"TEE Subsystem - OP-TEE Driver"}\cite{linux_tee_subsystem} }
+		\label{fig:optee-architecture}
+	\end{figure}
+	
 
 	\chapter{TEE in Ambiente Cloud}
 	\label{cap:problema}
