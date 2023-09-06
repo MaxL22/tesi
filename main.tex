@@ -507,7 +507,7 @@
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.8\textwidth]{immagini/optee-system-architecture}
-		\caption{ Componenti dell'architettura OP-TEE. Da sinistra verso destra si possono vedere user space, kernel e secure world. Da \textit{"TEE Subsystem - OP-TEE Driver"}\cite{linux_tee_subsystem} }
+		\caption{ Componenti dell'architettura OP-TEE. Da sinistra verso destra si possono vedere user space, kernel e secure world. Da \textit{"TEE Subsystem - OP-TEE Driver"} \cite{linux_tee_subsystem} }
 		\label{fig:optee-architecture}
 	\end{figure}
 	
@@ -528,7 +528,7 @@
 	Un altro aspetto che può rivelarsi problematico è la condivisione dello stesso hardware tra clienti diversi. La separazione dovrebbe essere completa ma nel caso in cui un attaccante riuscisse a prendere il controllo o eludere l'hypervisor sarebbe in grado di accedere e possibilmente alterare i dati di tutti gli altri clienti presenti sulla macchina.
 	
 	\section{TEE as a Service}
-	\label{sec:passthrough}
+	\label{sec:taas}
 	In ambiente cloud potrebbe sembrare una soluzione efficace l'utilizzo di un TEE per garantire integrità e confidenzialità dei dati, ma si presentano alcune difficoltà, in quanto le possibilità di utilizzo dei Trusted Execution Environment all'interno di ambienti virtualizzati risultano limitate. Il modello tradizionale generalmente richiede un TEE dedicato per ogni cliente, il quale dovrebbe essere in grado di gestirlo.
 	
 	Inoltre non è sempre fattibile per limitazioni tecniche dovute alla condivisione della macchina.
@@ -561,11 +561,61 @@
 	
 	In questo modo il TEE diventa parte del servizio fornito dal provider, semplificandone la gestione e l'utilizzo da entrambe le parti.
 
+	\section{Implementazione Passthrough}
+	\label{sec:pass_impl}
+	Il passthrough è un sistema che consente a una macchina virtuale di inviare richieste al TEE presente sull'host. Per implementarlo è necessario creare un canale di comunicazione tra VM e host, estendendo l'hypervisor (in questo caso QEMU) con un nuovo device virtuale.
+	
+	Il driver per questo device viene utilizzato all'interno della VM e si interfaccia con il sottosistema TEE e il device virtuale. Il compito del driver è quello di soddisfare le richieste verso il TEE inoltrando e ricevendo le richieste dal device virtuale.
+	
+	Host e VM comunicano utilizzando questo device e implementano un protocollo di comunicazione a messaggi, i quali rappresentano le richieste che il guest può fare al TEE.
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{immagini/tee-passthrough-schema}
+		\caption{
+			Schema del sistema di passthrough. Evidenziate le aggiunte effettuate. Da \cite{tesi_cutecchia}
+		}
+		\label{fig:passthrough-schema}
+	\end{figure}
+
+	\paragraph{Device virtuale:} è stato implementato come estensione della macchina ARM \texttt{qemu\_virt\_8}, ma non si tratta di una scelta vincolante. Comunica con il driver tramite Memory Mapped Input/Output (MMIO), l'hypervisor si occuperà di inoltrare il messaggio scritto dal guest.
+
+	L'uso del device virtuale è strutturato similmente all'utilizzo dell'interfaccia user-space del sottosistema TEE di Linux \cite{linux_tee_subsystem}. In breve, il driver per aprire la connessione con il TEE deve leggere il valore identificativo della connessione da un registro, con una semantica simile ai descrittori di file. 
+
+	Per inviare una richiesta si ha un registro nella quale viene inserito l'indirizzo del buffer di memoria contenente il messaggio. Si ha anche un registro che permette di ottenere informazioni sull'esito della richiesta in seguito all'operazione.
+
+	\paragraph{Driver:} è stato implementato come modulo \textit{out-of-tree} del kernel Linux e progettato per contenere il minimo delle funzioni necessarie. Durante il caricamento l'area di memoria del device virtuale viene ri-mappata in una zona di memoria virtuale accessibile al kernel.
+
+	Ha il compito di ricevere richieste dal sottosistema TEE, convertirle in messaggi aderenti al protocolli di comunicazione ed inviarli al device virtuale. 
+
+	\paragraph{Protocollo:} necessario per la comunicazione tra host e guest, progettato per semplicità e strutturato similmente alle operazioni supportate dai device file TEE reali.
+
+	Si basa su un sistema a messaggi. Ogni messaggio presenta una struttura comune che serve per indicare come deve essere interpretato il resto del messaggio.
+
+	\begin{figure}[H]
+		\centering
+		\GeneraSchemaPacchetto{
+			type/8}{
+			payload\_size/8,
+			payload/variabile
+		}
+		\caption{
+			Header dei messaggi del protocollo. Da \cite{tesi_cutecchia}}
+		\label{fig:message-wrapper-schema}
+	\end{figure}
+
+	Il campo \textit{type} permette di identificare il contenuto di \textit{payload}, tramite un set di valori predefiniti. Il campo \textit{payload\_size} indica la dimensione in byte del campo \textit{payload} seguente.
+
+	All'interno del payload di molti messaggi è presente un valore \textit{fd} (\textit{File Descriptor}), il quale serve al driver per stabilire a quale connessione tra hypervisor e TEE inoltrare il messaggio. Messaggi parte della stessa connessione presentano lo stesso valore \textit{fd}.
+
+	\paragraph{Hypervisor:} l'estensione dell'hypervisor presenta più funzionalità. Come prima cosa, deve implementare il device virtuale, per il quale mantiene uno "stato" dei registri, aggiornato ad ogni scrittura nella zona MMIO del device in modo da sapere quando è necessario gestire un messaggio. Inoltre vengono implementati i messaggi del protocollo.
+
+	Astraendo, una delle funzioni è ricevere messaggi ed effettuare le rispettive \texttt{ioctl} e riscrivere nella memoria dell'host il risultato. Il problema con questo risiede nei valori che vengono passati all'hypervisor, in quanto validi solo all'interno della VM. Per risolvere il problema sono state implementate tabelle di traduzione dei valori.
+
+	Un altro problema riguarda la condivisione dei buffer di memoria tra TEE e guest, in quanto la memoria fisica non può essere condivisa, quindi sono presenti due buffer separati, uno per il TEE ed uno per il REE, che l'hypervisor si occupa di sincronizzare. I dati vengono copiati da guest ad un buffer accessibile all'hypervisor primo di iniziare una chiamata al TEE, e l'opposto avviene prima di lasciare nuovamente il controllo alla VM. 
+
 	% Da scrivere: 
 	%	Riportare informazioni Passthrough
-	%		Sottosistema Linux? Maybe qualche accenno?
-	%		Sicuramente OP-TEE
-	%		Sicuramente implementazione
 	%	Modello dell'ambiente pensato
 	%	Cosa si vuole fare e soluzioni pensate
 	
