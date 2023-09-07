@@ -614,10 +614,41 @@
 
 	Un altro problema riguarda la condivisione dei buffer di memoria tra TEE e guest, in quanto la memoria fisica non può essere condivisa, quindi sono presenti due buffer separati, uno per il TEE ed uno per il REE, che l'hypervisor si occupa di sincronizzare. I dati vengono copiati da guest ad un buffer accessibile all'hypervisor primo di iniziare una chiamata al TEE, e l'opposto avviene prima di lasciare nuovamente il controllo alla VM. 
 
+	\subsection{Performance Passthrough}
+	\label{subsec:perf-pass}
+	Il passthrough, per sua natura, introduce un overhead aggiuntivo, ma potenzialmente accettabile, in gran parte dato dalla sincronizzazione dei buffer di memoria condivisa. 
+	
+	All'interno della \tablename~\ref{tab:performance_pass} vengono riportati i tempi di esecuzione di \textit{xtest}, una suite di test presente all'interno di OP-TEE e di una semplice Trusted Application che si occupa in solamente di incrementare un valore. La differenza in overhead conferma l'idea che l'inefficienza viene data dalla sincronizzazione dei buffer.
+
+	\begin{table}[h]
+		\centering
+		1
+		\begin{tabular}{cccccc}
+		\multicolumn{1}{c|}{}  & \multicolumn{2}{c|}{\textbf{Senza Passthrough}} & \multicolumn{2}{c|}{\textbf{Con Passthrough}} &  \\
+		\multicolumn{1}{c|}{\multirow{-2}{*}{\textbf{Test}}} &
+		  \multicolumn{1}{c|}{\textbf{Media}} &
+		  \multicolumn{1}{c|}{\textbf{Dev. Std}} &
+		  \multicolumn{1}{c|}{\textbf{Media}} &
+		  \multicolumn{1}{c|}{\textbf{Dev. Std}} &
+		  \multirow{-2}{*}{\textbf{Overhead}} \\ \hline
+			\texttt{xtest -l 15}    & 1221,416  & 7,876 & 1319,174 & 12,790 & 8,003\% \\
+			\texttt{hello\_world}   & 34,989    & 0.132 & 35.581 & 0.400 & 1,71\% \\
+		\end{tabular}
+		\caption{
+			Confronto tra tempi di esecuzione con e senza passthrough. Da \cite{tesi_cutecchia}
+		}
+		\label{tab:performance_pass}
+	\end{table}
+
+	Nel secondo caso l'overhead è minimo e probabilmente dovuto per la maggior parte alla virtualizzazione della macchina.
+
 	% Da scrivere: 
-	%	Riportare informazioni Passthrough
 	%	Modello dell'ambiente pensato
-	%	Cosa si vuole fare e soluzioni pensate
+	%		Threat model
+	%		ambiente necessario
+	%		Realm?
+	%		Implementazione effettuata: proxy, layer, struttura?
+	%	Implementazione effettiva?
 	
 	\chapter{Implementazione}
 	\label{cap:implementazione}
