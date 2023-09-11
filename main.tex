@@ -511,6 +511,58 @@
 		\label{fig:optee-architecture}
 	\end{figure}
 	
+	\newpage
+
+	\section{ARM CCA} 
+	\label{sec:cca}
+	Il \textit{Confidential Computing}, ovvero la protezione dei dati durante la computazione, sta assumendo sempre più rilevanza, per questo motivo ARM ha presentato \textit{ARM Confidential Compute Architecture}, con l'obiettivo di impedire l'accesso e la modifica dei dati da parte anche di software privilegiato, come può essere un hypervisor.
+
+	\bigbreak
+
+	La \textit{Confidential Compute Architecture} introduce un metodo più dinamico e flessibile (rispetto a quelli tradizionali) per la creazione di TEE tramite l'introduzione dei \textit{Realms}. Questi rappresentano una nuova astrazione per proteggere integrità e confidenzialità dei dati.
+
+	L'hardware permette la creazione ed il mantenimento di un \textit{Realm World} (RW), uno spazio di indirizzamento fisico dedicato ai Realm, presente in modo ortogonale ai mondi Non-Secure (NS) e Secure precedentemente esistenti. 
+	
+	Ogni ambiente ha un suo \textit{Physical Address Space} (PAS), ovvero la sezione di memoria che gli viene dedicata. Quest'ultima è gestita dinamicamente e senza limitazioni statiche su quale ambiente può controllare che zona. All'interno della \figurename~\ref{fig:optee-architecture} si può notare come CCA estende la precedente architettura ARM.
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\textwidth]{immagini/CCA_Arch}
+		\caption{ Architettura di ARM CCA. Da \textit{Design and Verification of the Arm Confidential Compute Architecture} \cite{arm_cca_presentation}}
+		\label{fig:cca_arch}
+	\end{figure}
+
+	I livelli di privilegio presenti per ognuno dei mondi sono EL0 per gli utenti, EL1 per il kernel e EL2 per l'hypervisor. Realm ne introduce un quarto, EL3, a privilegio più alto, il quale si occupa della transizione da un mondo all'altro.
+
+	All'interno di ogni mondo i livelli di privilegio ed il loro funzionamento rimane uguale, ma software all'interno del mondo NS non può accedere a memoria o stati della CPU utilizzati da software nel Realm world.
+
+	\bigbreak
+
+	CCA introduce il \textit{Realm Management Monitor} (RMM), ovvero codice firmware eseguito nel RW a livello più alto dei Realm (EL2 nel RW). Ha il compito di gestire le richieste proveniente dal NS world riguardo la gestione dei Realm, mantenendo integrità e confidenzialità di quest'ultimi. Il software presente all'interno del NS world ritiene comunque il controllo sulla allocazione dinamica delle risorse hardware riguardanti i Realm. 
+	
+	Inoltre controlla l'esecuzione dei Realm e li isola tramite tecnologie di virtualizzazione. Dovendo solamente garantire le proprietà di sicurezza di CCA, e non tutte le funzioni tipiche di gestione della virtualizzazione, risulta significativamente più piccolo rispetto ad un tipico hypervisor.
+
+	\bigbreak
+
+	A livello EL3 viene eseguito il \textit{EL3 Monitor} (EL3M). Ha la responsabilità di effettuare il context switch tra i tre mondi e gestire la \textit{Granule Protection Table} (GPT), la tabella che tiene traccia del PAS di ogni zona di memoria. Solo il EL3M può cambiare il PAS di un \textit{granule} ed aggiornare la voce relativa all'interno della GPT.
+
+	Il software presente all'interno degli altri mondi può effettuare una \textit{Secure Monitor Call} (SMC) al EL3M per richiedere un cambio di PAS.
+
+	\bigbreak
+
+	Si ha fondamentalmente una "delegazione" di zone di memoria da parte dell'hypervisor al RMM, il quale ne garantisce le proprietà di sicurezza. Tutta la memoria utilizzata dall'RMM deve essere prima stata delegata dall'hypervisor.
+	
+	Per effettuare richieste all'RMM, questo mette a disposizione una \textit{Realm Management Interface} (RMI), dove ogni comando per la gestione dei Realm è implementato come una SMC.
+
+	\bigbreak
+
+	Ognuno dei 3 mondi presenti può accedere solamente alla propria memoria ed a quella del Non-Secure world, con l'eccezione del software presente a livello EL3, il quale ha accesso completo a tutta la memoria fisica. Il controllo degli accessi viene fatto rispettare tramite supporto di meccanismi hardware.
+
+	Questo permette di escludere anche software privilegiato, come hypervisor e sistemi operativi, dall'accesso delle zone di memoria degli altri mondi.
+
+	\bigbreak
+
+	Si tratta di una tecnologia che permetterebbe di risolvere diversi problemi in ambito di sicurezza cloud, ma non ancora disponibile, sarà presente assieme ad ARMv9-A.
 
 	\chapter{TEE in Ambiente Cloud}
 	\label{cap:problema}
@@ -661,7 +713,7 @@
 	\label{cap:dati}
 	%Riportare performance generali del sistema, dati di Marco
 	%Analisi performance con l'implementazione
-	%Commentare i risultati, perché alcuni sono 4% altri 150%
+	%Commentare i risultati, perché alcuni sono 4% altri 100%
 	
 	\chapter{Conclusioni}
 	\label{cap:conclusioni}
