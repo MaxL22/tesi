@@ -5,7 +5,7 @@
 \usepackage[a4paper]{geometry}		% Formato del foglio
 \usepackage[italian]{babel}			% Supporto per l'italiano
 \usepackage[utf8]{inputenc}			% Supporto per UTF-8
-%\usepackage[a-1b]{pdfx}				% File conforme allo standard PDF-A (obbligatorio per la consegna)
+\usepackage[a-1b]{pdfx}				% File conforme allo standard PDF-A (obbligatorio per la consegna)
 
 \usepackage{graphicx}				% Funzioni avanzate per le immagini
 \usepackage{hologo}					% Bibtex logo with \hologo{BibTeX}
@@ -33,28 +33,28 @@
 \MakeOuterQuote{"}
 
 \newcommand{\GeneraSchemaPacchetto}[2]{{
-\begin{tikzpicture}
-    [
-        box/.style={draw,rectangle,minimum width=\recminwidth, 
-        minimum height=\rectangleheight, 
-        outer sep=0pt, node distance=0pt}
-    ]
-
-    \def\rectangleheight{1cm}
-    \def\recminwidth{2cm}
-
-    \foreach \name/\size in {#1} {
-        \node[box, label={below:\small \texttt{\size{} byte}}] (0) {\texttt{\name}};
-    }    
-
-    \foreach \name/\size [count=\i] in {#2}
-    {
-        \pgfmathtruncatemacro\prevposition{\i - 1}
-        \node[box, right = 0pt of \prevposition,
-            label={below:\small \texttt{\IfInteger{\size}{\size\ byte}{\size}}}
-        ] (\i) {\texttt{\name}};
-    }
-\end{tikzpicture}
+		\begin{tikzpicture}
+			[
+			box/.style={draw,rectangle,minimum width=\recminwidth, 
+				minimum height=\rectangleheight, 
+				outer sep=0pt, node distance=0pt}
+			]
+			
+			\def\rectangleheight{1cm}
+			\def\recminwidth{2cm}
+			
+			\foreach \name/\size in {#1} {
+				\node[box, label={below:\small \texttt{\size{} byte}}] (0) {\texttt{\name}};
+			}    
+			
+			\foreach \name/\size [count=\i] in {#2}
+			{
+				\pgfmathtruncatemacro\prevposition{\i - 1}
+				\node[box, right = 0pt of \prevposition,
+				label={below:\small \texttt{\IfInteger{\size}{\size\ byte}{\size}}}
+				] (\i) {\texttt{\name}};
+			}
+		\end{tikzpicture}
 }}
 
 \def\myCDL{Corso di Laurea in\\ Sicurezza dei Sistemi e delle Reti Informatiche}
@@ -79,10 +79,10 @@
 %\tablespagetrue
 
 \begin{document}
-
+	
 	\frontespizio
 	\afterpreface
-
+	
 	\chapter*{Sommario}
 	\addcontentsline{toc}{chapter}{Sommario}  
 	\label{cap:sommario}
@@ -131,121 +131,121 @@
 	
 	\subsection{Architettura TEE}
 	\label{subsec:architettura}
- 	Le direttive di GlobalPlatform non fanno riferimento ad implementazioni specifiche per quanto riguarda l'architettura, ma piuttosto delineano una struttura generale degli elementi logici costituenti il TEE e le loro interazioni. Vengono solamente stabiliti i requisiti di sicurezza che l'hardware deve poter garantire al TEE.
- 	
- 	\bigbreak
- 	
- 	In generale, il sistema è suddiviso in due ambienti distinti, noti come \textit{Trusted Execution Environment} (TEE) e \textit{Regular Execution Environment} (REE). Quest'ultimo costituisce l'insieme dei componenti di un dispositivo e il sistema operativo convenzionale. Generalmente si ha un solo TEE, ma nulla vieta di implementarne molteplici, sebbene si tratti di una pratica poco comune. Da qui in poi si farà riferimento ad un ambiente con un solo TEE e REE per semplicità.
- 	
- 	Ogni risorsa può essere controllata dal REE o da un TEE ed il possesso può essere trasferito tra gli ambienti. Una risorsa controllata da uno specifico TEE viene isolata dagli altri ambienti di esecuzione, se non altrimenti specificato esplicitamente dal TEE. In generale, il TEE può avere capacità di accedere alle risorse del REE, mentre il contrario non è possibile, a meno che non siano concessi permessi specifici. 
- 	
- 	L'unico modo che il REE ha per accedere alle risorse in ambiente protetto è tramite entry point delle API o servizi esposti dal TEE, ma non viene specificato un metodo preciso per imporre il controllo degli accessi.
- 	
- 	\begin{figure}
- 		\centering
- 		\includegraphics[width=1\textwidth]{immagini/TEE_SW_Architecture}
- 		\caption{
- 			Architettura di un TEE conforme GlobalPlatform. 
- 			Da \textit{TEE System Architecture v1.3 (pag. 28)}
- 			\cite{gp2020systemarchitecture}
- 		}
- 		\label{fig:tee-architecture}
- 	\end{figure}
- 	
- 	\bigbreak
- 	
- 	In \figurename~\ref{fig:tee-architecture} si può vedere un possibile esempio di architettura software di un sistema conforme GlobalPlatform. Si può vedere la separazione di REE e TEE, in quanto ambienti completamente separati, dotati ciascuno di sistema operativo, scheduling e risorse proprie.
- 	
- 	Le applicazioni all'interno del REE vengono classificate come \textit{Client Applications} (CA), mentre le applicazioni all'interno del TEE sono denominate \textit{Trusted Applications} (TA).
- 	
- 	All'interno del TEE è presente un \textit{Trusted Kernel} che fornisce scheduling ed altre funzioni di gestione del sistema operativo, sia per le TA che per il Trusted Core Framework.
- 	
- 	\bigbreak
- 	
- 	Una CA per richiedere un servizio da una Trusted Application utilizza la \textit{Client API}. Tale API consente di stabilire una sessione con la TA e inviare un messaggio contenente la funzione da invocare e i relativi parametri.
- 	
- 	All'interno di entrambi gli ambienti sono presenti dei \textit{Communication Agent}. Questi agenti si occupano di fornire il supporto per lo scambio di messaggi tra la Client Application e la Trusted Application e, se necessario, anche tra diverse TA.
- 	
- 	
- 	\paragraph{Trusted Core Framework:} le Trusted Application possono fare uso della \textit{Trusted Core Framework API}, la quale definisce API ed infrastrutture simili a quelle presente in un sistema operativo. Ciò permette di avere un'interfaccia comune per le TA, indipendentemente dal TEE sulla quale vengono eseguite. Queste specifiche sono contenute all'interno del \textit{TEE Internal Core API Specification}\cite{gp2020internalapi}.
- 	
- 	\paragraph{Periferiche:} vengono suddivise in tre categorie: 
- 	\begin{itemize}
- 		\item \textit{Public Peripherals}: possono essere utilizzate sia dal TEE che dalle applicazioni REE. L'accesso dalle TA avviene attraverso API fornite dal TEE. L'utilizzo da parte di applicazioni esterne al TEE segue le modalità di accesso standard del sistema operativo.
- 		\item \textit{Trusted Peripherals}: l'accesso a questo periferiche è consentito esclusivamente a TA autorizzate, tramite interfacce API definite dal TEE.
- 		\item \textit{Shared Trusted Peripherals}: di norma l'accesso a queste periferiche è consentito solo al TEE, ma questo può concedere temporaneamente l'accesso anche al REE. Il processo di condivisione deve essere comunque gestito da hardware sotto il controllo del TEE.
- 	\end{itemize}
- 	
- 	
- 	\subsection{Garanzie di Sicurezza}
- 	\label{subsec:garanzie}
- 	Come già detto in precedenza, il termine "Trusted Execution Environment" può fare riferimento ad una moltitudine di prodotti, quindi questi potrebbero variare in termini di garanzie di sicurezza che forniscono. Per questo motivo GlobalPlatform ha definito all'interno del \textit{Protection Profile} \cite{gp2020protectionprofile} i requisiti minimi di sicurezza che un TEE deve avere per poter essere certificato. Nonostante le proprietà indicate rappresentino una linea base minima, non è detto che un TEE non possa implementarne altre.
- 	
- 	\bigbreak
- 	
- 	In generale si può affermare che un TEE dovrebbe garantire le proprietà di integrità e confidenzialità del codice e di ciò che esso crea, e garantire esecuzione isolata rispetto al REE.
- 	
- 	Come già visto per altri documenti, GlobalPlatform non stabilisce implementazioni precise ma fornisce solo delle direttive. Nonostante ciò, all'atto pratico si hanno alcune caratteristiche comuni alla maggior parte dei TEE, come l'utilizzo di firme digitali per l'autenticazione del codice e l'utilizzo di supporto hardware per realizzare l'isolamento.
- 	
- 	\bigbreak
- 	
- 	\paragraph{Isolamento:} la separazione del sistema in zone isolate al fine di garantire la proprietà di isolamento non è nuova, in quanto già proposta da J.M. Rushby nel 1981 \cite{rushby1981separationkernel}. 
- 	
- 	Rushby infatti metteva in evidenza come un sistema distribuito permetta di gestire la sicurezza tramite separazione fisica delle parti e mediazione di funzioni fidate.
- 	
- 	Questo concetto può essere esteso ad una singola macchina, la quale viene vista come sistema distribuito di componenti indipendenti, i quali quindi permettono di ritenere le proprietà di sicurezza di un sistema distribuito.
- 	
- 	Nel mondo TEE questa idea viene ripresa tramite l'implementazione di un \textit{separation kernel}, l'elemento usato per simulare un sistema distribuito, come evidenziato da Sabt et al \cite{sabt2015tee}. Questo permette la coesistenza di diversi sistemi, con diversi requisiti di sicurezza, sulla stessa piattaforma. Fondamentalmente divide il sistema in partizioni e garantisce isolamento tra di esse, tranne per alcune interfacce controllate.
- 	
- 	I requisiti di sicurezza generali del separation kernel si possono trovare all'interno del \textit{Separation Kernel Protection Profile} (SPKK) \cite{spkk2007}, ma si possono riassumere in quattro policy di sicurezza principali: 
- 	\begin{itemize}
- 		\item \textit{Data (spatial) separation:} dati all'interno di una partizione non possono essere letti o modificati da altre partizioni.
- 		\item \textit{Sanitization (temporal separation):} le risorse condivise non devono permettere la fuoriuscita di informazioni ad altre partizioni.
- 		\item \textit{Control of information flow:} la comunicazione tra partizioni deve sempre essere espressa esplicitamente.
- 		\item \textit{Fault isolation:} falle di sicurezza in una partizione non devono poter condizionare le altre.
- 	\end{itemize}
- 	
- 	La separazione di servizi importanti e dati sensibili permette di minimizzare la possibile superficie d'attacco di un sistema, in quanto la compromissione di un componente non causa danni alle altre parti del sistema. L'unica eccezione sarebbe un fallimento del separation kernel stesso, che per questo motivo deve rimanere più semplice possibile. 
- 	
- 	Nella pratica il sistema distribuito descritto da Rushby si compone di due sole componenti, REE e TEE, in quanto tutte le implementazioni effettive prevedono un solo TEE.
- 	
- 	\newpage
- 	
- 	\paragraph{Integrità e autenticità:} i benefici di protezione durante l'esecuzione dati dall'isolamento vengono annullati se non sono garantite integrità ed autenticità del codice, in quanto modifiche a dispositivo spento permetterebbero la compromissione del sistema.
- 	
- 	\bigbreak
- 	
- 	Per effettuare questa verifica è necessario un \textit{TEE Secure Boot}, come definito dal \textit{TEE System Architecture} \cite{gp2020systemarchitecture}. Questo è un processo di autenticazione di tutto il software che andrà dentro al TEE, ad eccezione del primissimo codice eseguito per il boot, scritto su una memoria ROM, impossibile da sovrascrivere, la cui integrità è quindi intrinsecamente garantita.
- 	
- 	\bigbreak
- 	
- 	Ogni componente caricato permette di verificare e caricare il componente successivo, come mostrato in \figurename~\ref{fig:tee-secure-boot}. La verifica può essere implementata, ad esempio, tramite un meccanismo di autentecazione basato su coppie di chiavi, che permettono di firmare e verificare l'hash del codice da caricare. Questo permette di garantire che un ente fidato abbia approvato quel software.
- 	
- 	Il firmware del dispositivo deve però conoscere le chiavi pubbliche necessarie per poter verificare la firma dei software da caricare, ma si tratta di un dettaglio implementativo dipendente dal sistema.
- 	
- 	\bigbreak
- 	
- 	Prima di uscire dal processo di boot il firmware può verificare il boot loader del REE prima della sua esecuzione. In caso di fallimento di verifica di qualsiasi dei componenti prima di questo generalmente il dispositivo termina il processo e viene riavviato, altrimenti continua con l'esecuzione del REE boot loader.
- 	
- 	\bigbreak
- 	
- 	Questo processo non è dissimile da quello di un \textit{Secure Boot} tradizionale, con le differenze che in un TEE questo processo non termina con l'avvio del sistema operativo e non verifica solo il processo, ma anche il software che andrà in esecuzione sul sistema.
- 	
- 	\begin{figure}
- 		\centering
- 		\includegraphics[width=1\textwidth]{immagini/TEE_Secure_Boot}
- 		\caption{
- 			Esempio di TEE Secure Boot. 
- 			Da \textit{GlobalPlatform TEE System Architecture pag. 73}
- 			\cite{gp2020systemarchitecture}
- 		}
- 		\label{fig:tee-secure-boot}
- 	\end{figure}
- 	
- 	\newpage
- 	
- 	\section{Applicazioni dei TEE}
- 	\label{sec:applicazioni}
+	Le direttive di GlobalPlatform non fanno riferimento ad implementazioni specifiche per quanto riguarda l'architettura, ma piuttosto delineano una struttura generale degli elementi logici costituenti il TEE e le loro interazioni. Vengono solamente stabiliti i requisiti di sicurezza che l'hardware deve poter garantire al TEE.
+	
+	\bigbreak
+	
+	In generale, il sistema è suddiviso in due ambienti distinti, noti come \textit{Trusted Execution Environment} (TEE) e \textit{Regular Execution Environment} (REE). Quest'ultimo costituisce l'insieme dei componenti di un dispositivo e il sistema operativo convenzionale. Generalmente si ha un solo TEE, ma nulla vieta di implementarne molteplici, sebbene si tratti di una pratica poco comune. Da qui in poi si farà riferimento ad un ambiente con un solo TEE e REE per semplicità.
+	
+	Ogni risorsa può essere controllata dal REE o da un TEE ed il possesso può essere trasferito tra gli ambienti. Una risorsa controllata da uno specifico TEE viene isolata dagli altri ambienti di esecuzione, se non altrimenti specificato esplicitamente dal TEE. In generale, il TEE può avere capacità di accedere alle risorse del REE, mentre il contrario non è possibile, a meno che non siano concessi permessi specifici. 
+	
+	L'unico modo che il REE ha per accedere alle risorse in ambiente protetto è tramite entry point delle API o servizi esposti dal TEE, ma non viene specificato un metodo preciso per imporre il controllo degli accessi.
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=1\textwidth]{immagini/TEE_SW_Architecture}
+		\caption{
+			Architettura di un TEE conforme GlobalPlatform. 
+			Da \textit{TEE System Architecture v1.3 (pag. 28)}
+			\cite{gp2020systemarchitecture}
+		}
+		\label{fig:tee-architecture}
+	\end{figure}
+	
+	\bigbreak
+	
+	In \figurename~\ref{fig:tee-architecture} si può vedere un possibile esempio di architettura software di un sistema conforme GlobalPlatform. Si può vedere la separazione di REE e TEE, in quanto ambienti completamente separati, dotati ciascuno di sistema operativo, scheduling e risorse proprie.
+	
+	Le applicazioni all'interno del REE vengono classificate come \textit{Client Applications} (CA), mentre le applicazioni all'interno del TEE sono denominate \textit{Trusted Applications} (TA).
+	
+	All'interno del TEE è presente un \textit{Trusted Kernel} che fornisce scheduling ed altre funzioni di gestione del sistema operativo, sia per le TA che per il Trusted Core Framework.
+	
+	\bigbreak
+	
+	Una CA per richiedere un servizio da una Trusted Application utilizza la \textit{Client API}. Tale API consente di stabilire una sessione con la TA e inviare un messaggio contenente la funzione da invocare e i relativi parametri.
+	
+	All'interno di entrambi gli ambienti sono presenti dei \textit{Communication Agent}. Questi agenti si occupano di fornire il supporto per lo scambio di messaggi tra la Client Application e la Trusted Application e, se necessario, anche tra diverse TA.
+	
+	
+	\paragraph{Trusted Core Framework:} le Trusted Application possono fare uso della \textit{Trusted Core Framework API}, la quale definisce API ed infrastrutture simili a quelle presente in un sistema operativo. Ciò permette di avere un'interfaccia comune per le TA, indipendentemente dal TEE sulla quale vengono eseguite. Queste specifiche sono contenute all'interno del \textit{TEE Internal Core API Specification}\cite{gp2020internalapi}.
+	
+	\paragraph{Periferiche:} vengono suddivise in tre categorie: 
+	\begin{itemize}
+		\item \textit{Public Peripherals}: possono essere utilizzate sia dal TEE che dalle applicazioni REE. L'accesso dalle TA avviene attraverso API fornite dal TEE. L'utilizzo da parte di applicazioni esterne al TEE segue le modalità di accesso standard del sistema operativo.
+		\item \textit{Trusted Peripherals}: l'accesso a questo periferiche è consentito esclusivamente a TA autorizzate, tramite interfacce API definite dal TEE.
+		\item \textit{Shared Trusted Peripherals}: di norma l'accesso a queste periferiche è consentito solo al TEE, ma questo può concedere temporaneamente l'accesso anche al REE. Il processo di condivisione deve essere comunque gestito da hardware sotto il controllo del TEE.
+	\end{itemize}
+	
+	
+	\subsection{Garanzie di Sicurezza}
+	\label{subsec:garanzie}
+	Come già detto in precedenza, il termine "Trusted Execution Environment" può fare riferimento ad una moltitudine di prodotti, quindi questi potrebbero variare in termini di garanzie di sicurezza che forniscono. Per questo motivo GlobalPlatform ha definito all'interno del \textit{Protection Profile} \cite{gp2020protectionprofile} i requisiti minimi di sicurezza che un TEE deve avere per poter essere certificato. Nonostante le proprietà indicate rappresentino una linea base minima, non è detto che un TEE non possa implementarne altre.
+	
+	\bigbreak
+	
+	In generale si può affermare che un TEE dovrebbe garantire le proprietà di integrità e confidenzialità del codice e di ciò che esso crea, e garantire esecuzione isolata rispetto al REE.
+	
+	Come già visto per altri documenti, GlobalPlatform non stabilisce implementazioni precise ma fornisce solo delle direttive. Nonostante ciò, all'atto pratico si hanno alcune caratteristiche comuni alla maggior parte dei TEE, come l'utilizzo di firme digitali per l'autenticazione del codice e l'utilizzo di supporto hardware per realizzare l'isolamento.
+	
+	\bigbreak
+	
+	\paragraph{Isolamento:} la separazione del sistema in zone isolate al fine di garantire la proprietà di isolamento non è nuova, in quanto già proposta da J.M. Rushby nel 1981 \cite{rushby1981separationkernel}. 
+	
+	Rushby infatti metteva in evidenza come un sistema distribuito permetta di gestire la sicurezza tramite separazione fisica delle parti e mediazione di funzioni fidate.
+	
+	Questo concetto può essere esteso ad una singola macchina, la quale viene vista come sistema distribuito di componenti indipendenti, i quali quindi permettono di ritenere le proprietà di sicurezza di un sistema distribuito.
+	
+	Nel mondo TEE questa idea viene ripresa tramite l'implementazione di un \textit{separation kernel}, l'elemento usato per simulare un sistema distribuito, come evidenziato da Sabt et al \cite{sabt2015tee}. Questo permette la coesistenza di diversi sistemi, con diversi requisiti di sicurezza, sulla stessa piattaforma. Fondamentalmente divide il sistema in partizioni e garantisce isolamento tra di esse, tranne per alcune interfacce controllate.
+	
+	I requisiti di sicurezza generali del separation kernel si possono trovare all'interno del \textit{Separation Kernel Protection Profile} (SPKK) \cite{spkk2007}, ma si possono riassumere in quattro policy di sicurezza principali: 
+	\begin{itemize}
+		\item \textit{Data (spatial) separation:} dati all'interno di una partizione non possono essere letti o modificati da altre partizioni.
+		\item \textit{Sanitization (temporal separation):} le risorse condivise non devono permettere la fuoriuscita di informazioni ad altre partizioni.
+		\item \textit{Control of information flow:} la comunicazione tra partizioni deve sempre essere espressa esplicitamente.
+		\item \textit{Fault isolation:} falle di sicurezza in una partizione non devono poter condizionare le altre.
+	\end{itemize}
+	
+	La separazione di servizi importanti e dati sensibili permette di minimizzare la possibile superficie d'attacco di un sistema, in quanto la compromissione di un componente non causa danni alle altre parti del sistema. L'unica eccezione sarebbe un fallimento del separation kernel stesso, che per questo motivo deve rimanere più semplice possibile. 
+	
+	Nella pratica il sistema distribuito descritto da Rushby si compone di due sole componenti, REE e TEE, in quanto tutte le implementazioni effettive prevedono un solo TEE.
+	
+	\newpage
+	
+	\paragraph{Integrità e autenticità:} i benefici di protezione durante l'esecuzione dati dall'isolamento vengono annullati se non sono garantite integrità ed autenticità del codice, in quanto modifiche a dispositivo spento permetterebbero la compromissione del sistema.
+	
+	\bigbreak
+	
+	Per effettuare questa verifica è necessario un \textit{TEE Secure Boot}, come definito dal \textit{TEE System Architecture} \cite{gp2020systemarchitecture}. Questo è un processo di autenticazione di tutto il software che andrà dentro al TEE, ad eccezione del primissimo codice eseguito per il boot, scritto su una memoria ROM, impossibile da sovrascrivere, la cui integrità è quindi intrinsecamente garantita.
+	
+	\bigbreak
+	
+	Ogni componente caricato permette di verificare e caricare il componente successivo, come mostrato in \figurename~\ref{fig:tee-secure-boot}. La verifica può essere implementata, ad esempio, tramite un meccanismo di autenticazione basato su coppie di chiavi, che permettono di firmare e verificare l'hash del codice da caricare. Questo permette di garantire che un ente fidato abbia approvato quel software.
+	
+	Il firmware del dispositivo deve però conoscere le chiavi pubbliche necessarie per poter verificare la firma dei software da caricare, ma si tratta di un dettaglio implementativo dipendente dal sistema.
+	
+	\bigbreak
+	
+	Prima di uscire dal processo di boot il firmware può verificare il boot loader del REE prima della sua esecuzione. In caso di fallimento di verifica di qualsiasi dei componenti prima di questo generalmente il dispositivo termina il processo e viene riavviato, altrimenti continua con l'esecuzione del REE boot loader.
+	
+	\bigbreak
+	
+	Questo processo non è dissimile da quello di un \textit{Secure Boot} tradizionale, con le differenze che in un TEE questo processo non termina con l'avvio del sistema operativo e non verifica solo il processo, ma anche il software che andrà in esecuzione sul sistema.
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=1\textwidth]{immagini/TEE_Secure_Boot}
+		\caption{
+			Esempio di TEE Secure Boot. 
+			Da \textit{GlobalPlatform TEE System Architecture pag. 73}
+			\cite{gp2020systemarchitecture}
+		}
+		\label{fig:tee-secure-boot}
+	\end{figure}
+	
+	\newpage
+	
+	\section{Applicazioni dei TEE}
+	\label{sec:applicazioni}
 	I Trusted Execution Environment, grazie alle proprietà di sicurezza che garantiscono, permettono lo sviluppo di nuove applicazioni prima non possibili e l'espansione di quelle già esistenti.
 	
 	Fino ad ora la maggiore diffusione dei TEE è rimasta in ambito mobile, anche se non sempre pubblicizzati esplicitamente. L'utilizzo non è però limitato a questo settore, le applicazioni dei TEE possono essere molteplici, anche se la maggioranza dei dispositivi non permette l'installazione di software all'interno del TEE dopo la configurazione iniziale.
@@ -293,7 +293,7 @@
 	
 	Con questo modello sorgono però altre problematiche di sicurezza; ad esempio, il cloud provider deve poter gestire la macchina in quanto mantenitore dell'infrastruttura, ma questo significa anche che ha la capacità di poter leggere tutti i dati presenti in memoria.
 	
-	Inoltre un elemento fondamentale alla scalabilità del modello è l'utilizzo di una sola macchina fisica per molteplici macchine virtuali (VM), possibilmente assegnate ad altrettanti clienti. Questo significa che più clienti condividono la stessa memoria fisica, aprendo la porta a possibili attacchi che eludono le misure messe in atto per l'isolamento di una VM dalle altre, come già successo \cite{vmescape1} \cite{vmescape2} \cite{vmescape3}. In questo modo gli attaccanti avrebbero modo di accedere ai dati presenti all'interno delle altre macchine virtuali ed in alcuni casi anche di manipolareil codice per i loro scopi.
+	Inoltre un elemento fondamentale alla scalabilità del modello è l'utilizzo di una sola macchina fisica per molteplici macchine virtuali (VM), possibilmente assegnate ad altrettanti clienti. Questo significa che più clienti condividono la stessa memoria fisica, aprendo la porta a possibili attacchi che eludono le misure messe in atto per l'isolamento di una VM dalle altre, come già successo \cite{vmescape1} \cite{vmescape2} \cite{vmescape3}. In questo modo gli attaccanti avrebbero modo di accedere ai dati presenti all'interno delle altre macchine virtuali ed in alcuni casi anche di manipolare il codice per i loro scopi.
 	
 	\bigbreak
 	
@@ -317,7 +317,7 @@
 	\label{sec:supporto-hw}
 	Affinché un TEE possa soddisfare le proprietà di sicurezza necessarie, è fondamentale che esso disponga di un supporto hardware adeguato. Ad esempio, un requisito critico che necessita tale sostegno è la proprietà di isolamento rispetto al resto del sistema.
 	
-	Esistono moltemplici soluzioni per implementare queste proprietà, perciò in questo capitolo verranno esplorate brevemente alcune delle principali proposte sul mercato.
+	Esistono molteplici soluzioni per implementare queste proprietà, perciò in questo capitolo verranno esplorate brevemente alcune delle principali proposte sul mercato.
 	
 	\subsection{Intel SGX}
 	\label{subsec:sgx}
@@ -437,7 +437,7 @@
 	
 	Le soluzioni esistenti, citate nelle sezioni precedenti, pongono limiti progettuali che possono rendere difficoltoso utilizzare l'ambiente in un modo che sia in linea con le proprie esigenze, a volte forzando gli sviluppatori a creare soluzioni alternative, come ad esempio nel caso di dover eseguire applicazioni non modificate all'interno di SGX \cite{grapheneSGX}.
 	
-	Entrambi i progetti citati precedentemente si basano sullo sfruttare l'isolazione della memoria fornita da RISC-V, chiamata \textit{Physical Memory Protection} (PMP), per ottenere zone di memorie protette da accessi non autorizzati. Utilizzano la \textit{machine mode} (il livello di privilegio più alto di RISC-V) per eseguire un secure monitor con il compito di separare l'ambiente di esecuzione ordinario dalle enclavi sicure create.
+	Entrambi i progetti citati precedentemente si basano sullo sfruttare l'isolamento della memoria fornita da RISC-V, chiamata \textit{Physical Memory Protection} (PMP), per ottenere zone di memorie protette da accessi non autorizzati. Utilizzano la \textit{machine mode} (il livello di privilegio più alto di RISC-V) per eseguire un secure monitor con il compito di separare l'ambiente di esecuzione ordinario dalle enclavi sicure create.
 	
 	L'idea è simile a quelle presentate precedentemente con TrustZone o SGX, ma con minori limiti alla memoria e più possibilità di configurare le enclavi.
 	
@@ -478,7 +478,7 @@
 	Un esempio di attacco di questo tipo è stato trovato per il chip Titan M di Google \cite{attack_titanM}. Si tratta di un errore nella copia di un buffer all'interno dell'implementazione per Pixel di Keymaster, il quale permetterebbe di scrivere un byte di memoria in una zona arbitraria. Questo, assieme alla memoria statica del Titan M, permette di estrarre informazioni sicure del TEE.
 	
 	
-	Inoltre, in particolare facendo riferimento ad ARM, la superficie d'attacco visibile all'interno di una TA generalmente è abbastanza estesa, ad esempio è presente una grande quantità di chiamate di sistema del kernel TEE a cui può avere accesso ed in alcuni sistemi una TA può anda re a mappare in qualsiasi zona del sistema operativo ospitante. Una vulnerabilità all'interno di una TA può quindi portare al controllo completo del sistema.
+	Inoltre, in particolare facendo riferimento ad ARM, la superficie d'attacco visibile all'interno di una TA generalmente è abbastanza estesa, ad esempio è presente una grande quantità di chiamate di sistema del kernel TEE a cui può avere accesso ed in alcuni sistemi una TA può andare a mappare in qualsiasi zona del sistema operativo ospitante. Una vulnerabilità all'interno di una TA può quindi portare al controllo completo del sistema.
 	
 	\bigbreak
 	
@@ -489,11 +489,11 @@
 	Mitigare questi attacchi può non essere semplice, in quanto richiedono aggiornamenti del microcode o modifiche hardware.
 	
 	\newpage
-
+	
 	\section{OP-TEE}
 	\label{sec:optee}
 	Open Portable Trusted Execution Environment \cite{optee} è un progetto nato nel 2013, anche se sotto un altro nome e come TEE proprietario della ST-Ericsson, per fornire un ambiente di esecuzione open source, sicuro e affidabile per architetture ARM, sfruttando la tecnologia TrustZone, anche se è stato strutturato in modo tale da essere compatibile con altre tecnologie hardware che forniscono le funzionalità di un TEE.
-
+	
 	OP-TEE è stato sviluppato per essere compatibile con le specifiche GlobalPlatform, per questo motivo il software presenta caratteristiche architetturali simili (vedi \figurename~\ref{fig:optee-architecture}). Inoltre si tratta di uno dei due TEE per cui è implementato un driver all'interno del sottosistema Linux, oltre ad AMD Platform Security Processor.
 	
 	\bigbreak 
@@ -512,58 +512,58 @@
 	\end{figure}
 	
 	\newpage
-
+	
 	\section{ARM CCA} 
 	\label{sec:cca}
 	Il \textit{Confidential Computing}, ovvero la protezione dei dati durante la computazione, sta assumendo sempre più rilevanza, per questo motivo ARM ha presentato \textit{ARM Confidential Compute Architecture}, con l'obiettivo di impedire l'accesso e la modifica dei dati da parte anche di software privilegiato, come può essere un hypervisor.
-
+	
 	\bigbreak
-
+	
 	La \textit{Confidential Compute Architecture} introduce un metodo più dinamico e flessibile (rispetto a quelli tradizionali) per la creazione di TEE tramite l'introduzione dei \textit{Realms}. Questi rappresentano una nuova astrazione per proteggere integrità e confidenzialità dei dati.
-
+	
 	L'hardware permette la creazione ed il mantenimento di un \textit{Realm World} (RW), uno spazio di indirizzamento fisico dedicato ai Realm, presente in modo ortogonale ai mondi Non-Secure (NS) e Secure precedentemente esistenti. 
 	
 	Ogni ambiente ha un suo \textit{Physical Address Space} (PAS), ovvero la sezione di memoria che gli viene dedicata. Quest'ultima è gestita dinamicamente e senza limitazioni statiche su quale ambiente può controllare che zona. All'interno della \figurename~\ref{fig:optee-architecture} si può notare come CCA estende la precedente architettura ARM.
-
+	
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.7\textwidth]{immagini/CCA_Arch}
 		\caption{ Architettura di ARM CCA. Da \textit{Design and Verification of the Arm Confidential Compute Architecture} \cite{arm_cca_presentation}}
 		\label{fig:cca_arch}
 	\end{figure}
-
+	
 	I livelli di privilegio presenti per ognuno dei mondi sono EL0 per gli utenti, EL1 per il kernel e EL2 per l'hypervisor. Realm ne introduce un quarto, EL3, a privilegio più alto, il quale si occupa della transizione da un mondo all'altro.
-
+	
 	All'interno di ogni mondo i livelli di privilegio ed il loro funzionamento rimane uguale, ma software all'interno del mondo NS non può accedere a memoria o stati della CPU utilizzati da software nel Realm world.
-
+	
 	\bigbreak
-
+	
 	CCA introduce il \textit{Realm Management Monitor} (RMM), ovvero codice firmware eseguito nel RW a livello più alto dei Realm (EL2 nel RW). Ha il compito di gestire le richieste proveniente dal NS world riguardo la gestione dei Realm, mantenendo integrità e confidenzialità di quest'ultimi. Il software presente all'interno del NS world ritiene comunque il controllo sulla allocazione dinamica delle risorse hardware riguardanti i Realm. 
 	
 	Inoltre controlla l'esecuzione dei Realm e li isola tramite tecnologie di virtualizzazione. Dovendo solamente garantire le proprietà di sicurezza di CCA, e non tutte le funzioni tipiche di gestione della virtualizzazione, risulta significativamente più piccolo rispetto ad un tipico hypervisor.
-
+	
 	\bigbreak
-
+	
 	A livello EL3 viene eseguito il \textit{EL3 Monitor} (EL3M). Ha la responsabilità di effettuare il context switch tra i tre mondi e gestire la \textit{Granule Protection Table} (GPT), la tabella che tiene traccia del PAS di ogni zona di memoria. Solo il EL3M può cambiare il PAS di un \textit{granule} ed aggiornare la voce relativa all'interno della GPT.
-
+	
 	Il software presente all'interno degli altri mondi può effettuare una \textit{Secure Monitor Call} (SMC) al EL3M per richiedere un cambio di PAS.
-
+	
 	\bigbreak
-
+	
 	Si ha fondamentalmente una "delegazione" di zone di memoria da parte dell'hypervisor al RMM, il quale ne garantisce le proprietà di sicurezza. Tutta la memoria utilizzata dall'RMM deve essere prima stata delegata dall'hypervisor.
 	
 	Per effettuare richieste all'RMM, questo mette a disposizione una \textit{Realm Management Interface} (RMI), dove ogni comando per la gestione dei Realm è implementato come una SMC.
-
+	
 	\bigbreak
-
+	
 	Ognuno dei 3 mondi presenti può accedere solamente alla propria memoria ed a quella del Non-Secure world, con l'eccezione del software presente a livello EL3, il quale ha accesso completo a tutta la memoria fisica. Il controllo degli accessi viene fatto rispettare tramite supporto di meccanismi hardware.
-
+	
 	Questo permette di escludere anche software privilegiato, come hypervisor e sistemi operativi, dall'accesso delle zone di memoria degli altri mondi.
-
+	
 	\bigbreak
-
+	
 	Si tratta di una tecnologia che permetterebbe di risolvere diversi problemi in ambito di sicurezza cloud, ma non ancora disponibile, sarà presente assieme ad ARMv9-A.
-
+	
 	\chapter{TEE in Ambiente Cloud}
 	\label{cap:problema}
 	%Virttee design problems, problema nel portare roba in cloud e come risolverli. Problematiche e come sono state affrontate. Componenti senza implementazione, mettere schemi di funzionamento
@@ -586,22 +586,22 @@
 	Inoltre non è sempre fattibile per limitazioni tecniche dovute alla condivisione della macchina.
 	
 	\bigbreak
-
+	
 	Per aggirare queste limitazioni tecniche una possibile soluzione sarebbe includere il TEE all'interno del servizio proposto dal provider, permettendo di utilizzare un solo dispositivo fisico per tutti i client presenti sulla macchina. Questo però richiede la condivisione di un singolo TEE con più client virtuali, il che pone alcuni problemi.
-
+	
 	Il metodo presentato da Cutecchia \cite{tesi_cutecchia} per implementare la condivisione è l'utilizzo di un device virtuale, inserito come estensione dell'hypervisor, con il ruolo di intermediario tra TEE fisico ed ambiente virtuale. 
 	
 	\bigbreak
-
+	
 	\begin{figure}[h]
 		\centering
 		\begin{subfigure}{\columnwidth}
 			\centering
 			\includegraphics[width=0.8\linewidth]{immagini/common-cloud-tee-model}
 			\caption{Il modello tradizionale di TEE in ambiente cloud}
-			\label{fig:our-cloud-tee-model}
+			\label{fig:common-cloud-tee-model}
 		\end{subfigure}
-	
+		
 		\begin{subfigure}{\columnwidth}
 			\centering
 			\includegraphics[width=0.53\linewidth]{immagini/our-cloud-tee-model}
@@ -612,7 +612,7 @@
 	\end{figure}
 	
 	In questo modo il TEE diventa parte del servizio fornito dal provider, semplificandone la gestione e l'utilizzo da entrambe le parti.
-
+	
 	\section{Implementazione Passthrough}
 	\label{sec:pass_impl}
 	Il passthrough è un sistema che consente a una macchina virtuale di inviare richieste al TEE presente sull'host. Per implementarlo è necessario creare un canale di comunicazione tra VM e host, estendendo l'hypervisor (in questo caso QEMU) con un nuovo device virtuale.
@@ -620,7 +620,7 @@
 	Il driver per questo device viene utilizzato all'interno della VM e si interfaccia con il sottosistema TEE e il device virtuale. Il compito del driver è quello di soddisfare le richieste verso il TEE inoltrando e ricevendo le richieste dal device virtuale.
 	
 	Host e VM comunicano utilizzando questo device e implementano un protocollo di comunicazione a messaggi, i quali rappresentano le richieste che il guest può fare al TEE.
-
+	
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.7\linewidth]{immagini/tee-passthrough-schema}
@@ -629,21 +629,21 @@
 		}
 		\label{fig:passthrough-schema}
 	\end{figure}
-
+	
 	\paragraph{Device virtuale:} è stato implementato come estensione della macchina ARM \texttt{qemu\_virt\_8}, ma non si tratta di una scelta vincolante. Comunica con il driver tramite Memory Mapped Input/Output (MMIO), l'hypervisor si occuperà di inoltrare il messaggio scritto dal guest.
-
+	
 	L'uso del device virtuale è strutturato similmente all'utilizzo dell'interfaccia user-space del sottosistema TEE di Linux \cite{linux_tee_subsystem}. In breve, il driver per aprire la connessione con il TEE deve leggere il valore identificativo della connessione da un registro, con una semantica simile ai descrittori di file. 
-
+	
 	Per inviare una richiesta si ha un registro nella quale viene inserito l'indirizzo del buffer di memoria contenente il messaggio. Si ha anche un registro che permette di ottenere informazioni sull'esito della richiesta in seguito all'operazione.
-
+	
 	\paragraph{Driver:} è stato implementato come modulo \textit{out-of-tree} del kernel Linux e progettato per contenere il minimo delle funzioni necessarie. Durante il caricamento l'area di memoria del device virtuale viene ri-mappata in una zona di memoria virtuale accessibile al kernel.
-
+	
 	Ha il compito di ricevere richieste dal sottosistema TEE, convertirle in messaggi aderenti al protocolli di comunicazione ed inviarli al device virtuale. 
-
+	
 	\paragraph{Protocollo:} necessario per la comunicazione tra host e guest, progettato per semplicità e strutturato similmente alle operazioni supportate dai device file TEE reali.
-
+	
 	Si basa su un sistema a messaggi. Ogni messaggio presenta una struttura comune che serve per indicare come deve essere interpretato il resto del messaggio.
-
+	
 	\begin{figure}[H]
 		\centering
 		\GeneraSchemaPacchetto{
@@ -655,34 +655,34 @@
 			Header dei messaggi del protocollo. Da \cite{tesi_cutecchia}}
 		\label{fig:message-wrapper-schema}
 	\end{figure}
-
+	
 	Il campo \textit{type} permette di identificare il contenuto di \textit{payload}, tramite un set di valori predefiniti. Il campo \textit{payload\_size} indica la dimensione in byte del campo \textit{payload} seguente.
-
+	
 	All'interno del payload di molti messaggi è presente un valore \textit{fd} (\textit{File Descriptor}), il quale serve al driver per stabilire a quale connessione tra hypervisor e TEE inoltrare il messaggio. Messaggi parte della stessa connessione presentano lo stesso valore \textit{fd}.
-
+	
 	\paragraph{Hypervisor:} l'estensione dell'hypervisor presenta più funzionalità. Come prima cosa, deve implementare il device virtuale, per il quale mantiene uno "stato" dei registri, aggiornato ad ogni scrittura nella zona MMIO del device in modo da sapere quando è necessario gestire un messaggio. Inoltre vengono implementati i messaggi del protocollo.
-
+	
 	Astraendo, una delle funzioni è ricevere messaggi ed effettuare le rispettive \texttt{ioctl} e riscrivere nella memoria dell'host il risultato. Il problema con questo risiede nei valori che vengono passati all'hypervisor, in quanto validi solo all'interno della VM. Per risolvere il problema sono state implementate tabelle di traduzione dei valori.
-
+	
 	Un altro problema riguarda la condivisione dei buffer di memoria tra TEE e guest, in quanto la memoria fisica non può essere condivisa, quindi sono presenti due buffer separati, uno per il TEE ed uno per il REE, che l'hypervisor si occupa di sincronizzare. I dati vengono copiati da guest ad un buffer accessibile all'hypervisor primo di iniziare una chiamata al TEE, e l'opposto avviene prima di lasciare nuovamente il controllo alla VM. 
-
+	
 	\subsection{Performance Passthrough}
 	\label{subsec:perf-pass}
 	Il passthrough, per sua natura, introduce un overhead aggiuntivo, ma potenzialmente accettabile, in gran parte dato dalla sincronizzazione dei buffer di memoria condivisa. 
 	
 	All'interno della \tablename~\ref{tab:performance_pass} vengono riportati i tempi di esecuzione di \textit{xtest}, una suite di test presente all'interno di OP-TEE e di una semplice Trusted Application che si occupa in solamente di incrementare un valore. La differenza in overhead conferma l'idea che l'inefficienza viene data dalla sincronizzazione dei buffer.
-
+	
 	\begin{table}[h]
 		\centering
 		1
 		\begin{tabular}{cccccc}
-		\multicolumn{1}{c|}{}  & \multicolumn{2}{c|}{\textbf{Senza Passthrough}} & \multicolumn{2}{c|}{\textbf{Con Passthrough}} &  \\
-		\multicolumn{1}{c|}{\multirow{-2}{*}{\textbf{Test}}} &
-		  \multicolumn{1}{c|}{\textbf{Media}} &
-		  \multicolumn{1}{c|}{\textbf{Dev. Std}} &
-		  \multicolumn{1}{c|}{\textbf{Media}} &
-		  \multicolumn{1}{c|}{\textbf{Dev. Std}} &
-		  \multirow{-2}{*}{\textbf{Overhead}} \\ \hline
+			\multicolumn{1}{c|}{}  & \multicolumn{2}{c|}{\textbf{Senza Passthrough}} & \multicolumn{2}{c|}{\textbf{Con Passthrough}} &  \\
+			\multicolumn{1}{c|}{\multirow{-2}{*}{\textbf{Test}}} &
+			\multicolumn{1}{c|}{\textbf{Media}} &
+			\multicolumn{1}{c|}{\textbf{Dev. Std}} &
+			\multicolumn{1}{c|}{\textbf{Media}} &
+			\multicolumn{1}{c|}{\textbf{Dev. Std}} &
+			\multirow{-2}{*}{\textbf{Overhead}} \\ \hline
 			\texttt{xtest -l 15}    & 1221,416  & 7,876 & 1319,174 & 12,790 & 8,003\% \\
 			\texttt{hello\_world}   & 34,989    & 0.132 & 35.581 & 0.400 & 1,71\% \\
 		\end{tabular}
@@ -691,20 +691,32 @@
 		}
 		\label{tab:performance_pass}
 	\end{table}
-
+	
 	Nel secondo caso l'overhead è minimo e probabilmente dovuto per la maggior parte alla virtualizzazione della macchina.
-
-	% Da scrivere: 
-	%	Modello dell'ambiente pensato
-	%		Threat model
-	%		ambiente necessario
-	%		Realm?
-	%		Implementazione effettuata: proxy, layer, struttura?
-	%	Implementazione effettiva?
+	
+	
+	\newpage
+	
+	\section{Threat Model}
+	\label{sec:threat_model}
+	Fino ad ora il normale threat model relativo al cloud computing ha richiesto di considerare "trusted" l'hypervisor in quanto la possibilità di accesso ai dati delle macchine virtuali ospitate risulta conseguenza delle necessità di mantenimento dell'infrastruttura del servizio.
+	
+	Con il modello presentato possono però nascere alcuni dubbi riguardo la privacy dei dati: non si ha nessuna garanzia che il service provider sia un ente fidato, inoltre non è da escludere la possibilità che il software di cui si compone l'infrastruttura possa essere compromesso.
+	
+	\bigbreak
+	
+	Da qui in poi l'hypervisor verrà quindi considerato come \textit{untrusted} e l'obiettivo delle soluzioni presentate sarà quello di rendergli inaccessibili i dati relativi alle VM.
+	
+	Per la sicurezza dei dati stazionari all'interno della VM sono necessarie tecnologie come può essere AMD SEV (\ref{subsec:sev}), le quali permettono l'isolamento e la crittografia della memoria relativa ad una macchina virtuale in modo che sia inaccessibile anche all'hypervisor.
+	
+	\bigbreak
+	
+	Questo elaborato si concentrerà su soluzioni per garantire la privacy dei dati in transito, passanti per l'hypervisor e diretti al TEE, all'interno di un ambiente ARM. 
+	
 	
 	\chapter{Implementazione}
 	\label{cap:implementazione}
-	Nome WIP. Dettagli riguardo all'implementazione, soluzioni tecniche trovate
+	%Nome WIP. Dettagli riguardo all'implementazione, soluzioni tecniche trovate
 	%Iniziare con ciò che ha fatto marco? 
 	%Section del capitolo prima?
 	
@@ -722,5 +734,5 @@
 	\bibliographystyle{unsrt}
 	\bibliography{bibliografia}
 	\addcontentsline{toc}{chapter}{Bibliografia}
-
+	
 \end{document}
