@@ -705,24 +705,31 @@
 	
 	\bigbreak
 	
-	Da qui in poi l'hypervisor verrà quindi considerato come \textit{untrusted} e l'obiettivo delle soluzioni presentate sarà quello di rendergli inaccessibili i dati relativi alle VM.
-	
 	Per la sicurezza dei dati stazionari all'interno della VM sono necessarie tecnologie come può essere AMD SEV (\ref{subsec:sev}), le quali permettono l'isolamento e la crittografia della memoria relativa ad una macchina virtuale in modo che sia inaccessibile anche all'hypervisor.
-	
-	\bigbreak
 	
 	Questo elaborato si concentrerà su soluzioni per garantire la privacy dei dati in transito, passanti per l'hypervisor e diretti al TEE, all'interno di un ambiente ARM. 
 	
+	\bigbreak
+	
+	Da qui in poi l'hypervisor verrà quindi considerato come \textit{untrusted} e l'obiettivo delle soluzioni presentate sarà quello di garantire integrità e confidenzialità dei dati relativi alle VM che ospita. Il possibile attaccante coincide con l'hypervisor stesso, in quanto ente ostile in sé o per merito di compromissioni esterne, come ad esempio dovute a vulnerabilità del software.
+	
+	Non vengono considerati possibili attacchi alla disponibilità dei dati in quanto si presuppone che il fornitore di un servizio abbia interesse a mantenere disponibile il servizio stesso.
 	
 	\chapter{Implementazione}
 	\label{cap:implementazione}
 	%Nome WIP. Dettagli riguardo all'implementazione, soluzioni tecniche trovate
-	%Iniziare con ciò che ha fatto marco? 
-	%Section del capitolo prima?
+	L'utilizzo del passthrough mostrato nel capitolo precedente (\ref{sec:taas}) viene quindi limitato dai problemi di sicurezza che sorgono con la manipolazione di dati sensibili all'interno di macchine fisicamente non sotto il proprio controllo.
 	
+	L'obiettivo è quindi proporre soluzioni per garantire la privacy dei dati, i quali sono costretti a passare per l'hypervisor data la natura della virtualizzazione.
 	
-	\chapter{Analisi Performance}
-	\label{cap:dati}
+	\bigbreak
+	
+	Per fare ciò bisogna modificare la comunicazione tra macchina virtuale e TEE, in modo che i dati passati siano incomprensibili all'hypervisor. Nella pratica vuol dire crittografare i dati inviati all'interno delle richieste indirizzate alle TA ed estendere il codice presente all'interno del TEE in modo da poterle interpretarle correttamente.
+	
+	\newpage
+	
+	\section{Performance}
+	\label{sec:dati}
 	%Riportare performance generali del sistema, dati di Marco
 	%Analisi performance con l'implementazione
 	%Commentare i risultati, perché alcuni sono 4% altri 100%
