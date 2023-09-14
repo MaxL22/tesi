@@ -625,7 +625,7 @@
 		\centering
 		\includegraphics[width=0.7\linewidth]{immagini/tee-passthrough-schema}
 		\caption{
-			Schema del sistema di passthrough. Evidenziate le aggiunte effettuate. Da \cite{tesi_cutecchia}
+			Schema del sistema di passthrough. In evidenza le aggiunte effettuate. Da \cite{tesi_cutecchia}
 		}
 		\label{fig:passthrough-schema}
 	\end{figure}
@@ -670,7 +670,7 @@
 	\label{subsec:perf-pass}
 	Il passthrough, per sua natura, introduce un overhead aggiuntivo, ma potenzialmente accettabile, in gran parte dato dalla sincronizzazione dei buffer di memoria condivisa. 
 	
-	All'interno della \tablename~\ref{tab:performance_pass} vengono riportati i tempi di esecuzione di \textit{xtest}, una suite di test presente all'interno di OP-TEE e di una semplice Trusted Application che si occupa in solamente di incrementare un valore. La differenza in overhead conferma l'idea che l'inefficienza viene data dalla sincronizzazione dei buffer.
+	All'interno della \tablename~\ref{tab:performance_pass} vengono riportati i tempi di esecuzione di \textit{xtest}, una suite di test presente all'interno di OP-TEE e di una semplice Trusted Application che si occupa in solamente di incrementare un valore.
 	
 	\begin{table}[h]
 		\centering
@@ -692,7 +692,7 @@
 		\label{tab:performance_pass}
 	\end{table}
 	
-	Nel secondo caso l'overhead è minimo e probabilmente dovuto per la maggior parte alla virtualizzazione della macchina.
+	La differenza in overhead conferma l'idea che l'inefficienza viene data dalla sincronizzazione dei buffer, non utilizzati all'interno della TA considerata. Nel secondo caso l'overhead è minimo e probabilmente dovuto per la maggior parte alla virtualizzazione della macchina. 
 	
 	
 	\newpage
@@ -718,19 +718,35 @@
 	\chapter{Implementazione}
 	\label{cap:implementazione}
 	%Nome WIP. Dettagli riguardo all'implementazione, soluzioni tecniche trovate
-	L'utilizzo del passthrough mostrato nel capitolo precedente (\ref{sec:taas}) viene quindi limitato dai problemi di sicurezza che sorgono con la manipolazione di dati sensibili all'interno di macchine fisicamente non sotto il proprio controllo.
 	
-	L'obiettivo è quindi proporre soluzioni per garantire la privacy dei dati, i quali sono costretti a passare per l'hypervisor data la natura della virtualizzazione.
+	L'utilizzo del passthrough, come descritto nel capitolo precedente, presenta delle limitazioni in termini di sicurezza. Questo perché, quando si manipolano dati sensibili all'interno di macchine al di fuori del proprio controllo fisico deve essere considerato un nuovo threat model e le implicazioni relative. 
+	
+	L'obiettivo è quindi quello di proporre soluzioni atte a garantire riservatezza dei dati, i quali, a causa della natura della virtualizzazione, sono necessariamente soggetti al controllo dell'hypervisor.
 	
 	\bigbreak
 	
-	Per fare ciò bisogna modificare la comunicazione tra macchina virtuale e TEE, in modo che i dati passati siano incomprensibili all'hypervisor. Nella pratica vuol dire crittografare i dati inviati all'interno delle richieste indirizzate alle TA ed estendere il codice presente all'interno del TEE in modo da poterle interpretarle correttamente.
+	Per fare ciò è necessario modificare la comunicazione tra macchina virtuale e TEE, in modo che i dati passati siano incomprensibili all'hypervisor. Nella pratica ciò può essere ottenuto crittografando i dati inviati all'interno delle richieste indirizzate alle TA ed estendendo il codice presente all'interno del TEE in modo da poter decifrare correttamente tali richieste. 
+	
+	\section{Proxy}
+	\label{sec:proxy}
+	L'idea iniziale prevedeva l'utilizzo di una Trusted Application con il ruolo di "proxy" per le richieste destinate alle altre TA. 
+	
+	I compiti a cui il proxy avrebbe dovuto adempire sono: ricevere le richieste del REE, inoltrarle alla TA destinazione ed in seguito rispedire la risposta, il ciò decrittando i dati in entrata e crittografando i dati in uscita.
+	
+	\bigbreak
+	
+	Questo avrebbe permesso di avere un'interfaccia unificata per i software nel REE ed una programmazione completamente trasparente per le Trusted Application all'interno del TEE, in quanto tutta la componente di sicurezza legata alla crittografia viene gestita dal proxy. 
+	
+	In linea teorica per rendere completamente trasparente la programmazione all'utente finale si sarebbe anche potuto implementare un meccanismo di modifica delle richieste all'interno del driver, in modo che queste vengano reindirizzate al proxy, in quanto la richiesta a quest'ultimo è effettivamente un wrapper della richiesta "reale".
+	
+	\bigbreak
+	
+	Il problema con questo metodo è che necessita di effettivamente raddoppiare il numero di chiamate a TA che vengono eseguite, aggiungendo un overhead che può arrivare, per applicazioni semplici, a superare il tempo di esecuzione della chiamata senza proxy, come mostrato nel capitolo \ref{sec:dati}. Anche senza l'introduzione della crittografia il calo di performance non risulta accettabile.
 	
 	\newpage
 	
 	\section{Performance}
 	\label{sec:dati}
-	%Riportare performance generali del sistema, dati di Marco
 	%Analisi performance con l'implementazione
 	%Commentare i risultati, perché alcuni sono 4% altri 100%
 	
