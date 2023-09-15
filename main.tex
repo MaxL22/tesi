@@ -259,7 +259,7 @@
 	\label{subsec:secure-storage}
 	Una delle applicazioni più comuni dei TEE è il secure storage, ovvero un meccanismo che consente di proteggere e preservare dati sensibili e critici all'interno di un ambiente altamente affidabile e isolato. Il TEE fornisce una zona sicura all'interno del dispositivo in cui i dati possono essere memorizzati e gestiti in modo sicuro, garantendo la privacy e la riservatezza delle informazioni.
 	
-	Vengono spesso utilizzati per memorizzare sui dispositivi mobili elementi quali chiavi crittografiche, credenziali di autenticazione, certificati digitali, informazioni finanziarie ed altri dati personali.
+	Lo spazio nella maggioranza delle implementazioni è abbastanza limitato e non adatto al supporto di grossi dati strutturati, anche se esistono soluzioni che portano a risultati simili \cite{priebe2018enclavedb} \cite{ribeiro2018dbstore}. Di conseguenza vengono spesso utilizzati per memorizzare sui dispositivi mobili elementi quali chiavi crittografiche, credenziali di autenticazione, certificati digitali, informazioni finanziarie ed altri dati personali.
 	
 	\bigbreak
 	
@@ -741,7 +741,28 @@
 	
 	\bigbreak
 	
-	Il problema con questo metodo è che necessita di effettivamente raddoppiare il numero di chiamate a TA che vengono eseguite, aggiungendo un overhead che può arrivare, per applicazioni semplici, a superare il tempo di esecuzione della chiamata senza proxy, come mostrato nel capitolo \ref{sec:dati}. Anche senza l'introduzione della crittografia il calo di performance non risulta accettabile.
+	Il problema con questo metodo è che necessita di effettivamente raddoppiare il numero di chiamate a TA che vengono eseguite, aggiungendo un overhead che può arrivare, per applicazioni semplici, a superare il tempo di esecuzione della chiamata senza proxy, come mostrato nel capitolo \ref{sec:dati}. Anche senza l'introduzione della crittografia il calo di performance risulta non accettabile.
+	
+	\bigbreak
+	
+	L'interfaccia della TA proxy contiene 3 comandi: \texttt{BIND}, \texttt{RELEASE} ed \texttt{EXEC}.
+	
+	Il comando \texttt{BIND} inizializza la connessione con la TA di destinazione, fornisce un identificativo alla connessione appena aperta e salva all'interno di un array le informazioni relative alla sessione.
+	
+	Il comando \texttt{RELEASE} termina una sessione con una determinata TA e marca le informazioni legate a quella specifica connessione come "evicted", liberando l'indice dell'array relativo.  
+	
+	Il comando \texttt{EXEC} permette l'inoltra effettivo di un comando alla TA desiderata. All'interno della struttura dati ricevuta dal proxy devono essere presenti tutte le informazioni necessarie per la chiamata finale, ma queste devono essere elaborate dal proxy in modo da risultare accessibili dalla TA di destinazione; le operazioni inverse vanno effettuate per la risposta, in quanto necessario renderla visibile al REE. L'elaborazione dei dati è necessaria in quanto, ad esempio, un buffer di memoria condiviso dal REE con il proxy non risulta accessibile da parte della TA di destinazione. 
+	
+	La suddivisione permette maggiore flessibilità sul controllo delle sessioni, consentendo di mantenere aperta la connessione con una TA nel caso siano necessari più comandi eseguiti da quest'ultima all'interno di una singola istanza di questa.
+	
+	%%% ---- ADD IMG ---- %%%
+	
+	\newpage
+	
+	\section{Scambio Chiavi}
+	Per effettuare la cifratura dei dati è, ovviamente, necessario che prima avvenga uno scambio delle chiavi. Uno dei problemi che rimane è la memorizzazione delle chiavi, ma questo coincide con il problema più generale e già citato (\ref{sec:threat_model}) riguardante la sicurezza dei dati relativi alla VM memorizzati su disco.
+	
+	\bigbreak
 	
 	\newpage
 	
