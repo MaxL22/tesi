@@ -23,6 +23,7 @@
 \usepackage{multirow}               % Permette di creare tabelle con righe multiple
 \usepackage{caption}                % Roba per le figure side-by-side
 \usepackage{subcaption}             % Roba per le figure side-by-side
+\usepackage{enumitem}               % Gestione delle liste
 \graphicspath{{immagini/}}
 
 \usetikzlibrary{positioning}
@@ -757,12 +758,70 @@
 	
 	%%% ---- ADD IMG ---- %%%
 	
+	%        \begin{figure}[t]
+		% 	\centering
+		% 	\includegraphics[width=0.8\textwidth]{immagini/Proxy_schema}
+		% 	\caption{ Schema ad alto livello di funzionamento del Proxy }
+		% 	\label{fig:proxy}
+		% \end{figure}
+	
 	\newpage
 	
 	\section{Scambio Chiavi}
-	Per effettuare la cifratura dei dati è, ovviamente, necessario che prima avvenga uno scambio delle chiavi. Uno dei problemi che rimane è la memorizzazione delle chiavi, ma questo coincide con il problema più generale e già citato (\ref{sec:threat_model}) riguardante la sicurezza dei dati relativi alla VM memorizzati su disco.
+	\label{sec:scambio_chiavi}
+	Al fine di stabilire una comunicazione sicura uno dei passaggi fondamentali è lo scambio delle chiavi. Senza avere un segreto comune tra le parti non è possibile l'applicazione di alcun algoritmo crittografico simmetrico.
+	
+	Diventa quindi necessario l'utilizzo di tecniche le quali permettono di stabilire una chiave segreta condivisa senza doverla comunicare direttamente attraverso canali non sicuri, come può essere la mediazione dell'hypervisor.
+	
+	\subsection{Diffie-Hellman}
+	\label{subsec:dh}
+	Per questo progetto è stato utilizzata un'implementazione del protocollo di scambio chiavi Diffie-Hellman (DH) \cite{dhexchange}. Si tratta di un algoritmo non autenticato per stabilire una chiave condivisa, la cui sicurezza si basa sul problema del logaritmo discreto.
+	
+	In breve, il funzionamento dell'algoritmo è:
+	\begin{enumerate}
+		\item Vengono stabiliti dei parametri condivisi: un numero primo grande $p$ ed un valore $g$, generatore del gruppo moltiplicativo degli interi modulo $p$ 
+		\item Ciascuna delle parti coinvolte genera una chiave privata segreta, in questo caso chiamate $a$ e $b$
+		\item Ciascuna delle parti calcola e condivide la propria chiave pubblica:
+		\begin{itemize}[noitemsep,nolistsep,label=$-$]
+			\item $A = g^a \mod p$
+			\item $B = g^b \mod p$
+		\end{itemize}
+		\item Viene calcolata la chiave segreta condivisa
+		$$ K = B^a \mod p = A^b \mod p $$
+	\end{enumerate}
+	Conoscendo solamente i dati scambiati pubblicamente calcolare la chiave segreta equivale a risolvere il problema del logaritmo discreto, il che è considerato computazionalmente impossibile per valori di $p$ sufficientemente grandi e $g$ ben scelto.
+	
+	\subsection{Procedura per lo Scambio}
+	\label{subsec:proc_scambio}
+	All'interno del nostro sistema le due parti considerate sono TEE e REE. Per lo scambio effettivo è stata aggiunta una TA con il ruolo di mediatore per lo scambio. Non si tratta di una scelta obbligata ma porta il vantaggio di poter ridurre il codice da aggiungere alle TA di destinazione. 
 	
 	\bigbreak
+	
+	Lo scambio viene diviso in due parti: per iniziare vengono generate la chiave pubblica e privata del REE (generatore e numero primo sono statici) ed inviate alla TA "broker", assieme all'identificativo della TA di destinazione.
+	
+	In seguito alla chiamata la TA broker genererà la sua coppia di valori ed in questo modo possiede già tutte le informazioni necessarie per calcolare la chiave segreta. 
+	
+	La TA broker infine invoca la TA di destinazione per allocare la chiave segreta calcolata nel suo secure storage, un ambiente che permette il salvataggio di dati permanenti e condivisi tra diverse istanze della stessa TA. Viene considerato sicuro lo scambio di dati tra TA, in quanto interno al TEE stesso.
+	
+	La risposta all'applicazione conterrà la chiave pubblica, così da permettere il calcolo della chiave segreta anche nel REE.
+	
+	Prima di poter utilizzare effettivamente la chiave bisogna dare indicazione alla specifica istanza della TA destinazione di recuperare la chiave dal suo secure storage, tramite il comando \texttt{GET\_KEY}, da chiamare solamente una sola volta per sessione, prima dell'esecuzione di altri comandi.
+	
+	\bigbreak 
+	
+	All'interno della TA di destinazione sarà necessario aggiungere solamente il codice necessario per l'utilizzo del secure storage e per l'estrazione della chiave da quest'ultimo.
+	
+	\bigbreak
+	
+	Questo metodo introduce un overhead aggiuntivo, il quale però perde rilevanza in maniera proporzionale all'incrementare del numero chiamate ad una stessa istanza della TA, in quanto si tratta di un tempo fisso da aggiungere all'inizializzazione della sessione. 
+	
+	\bigbreak
+	
+	Questo algoritmo può essere considerato sicuro contro la sola intercettazione ma, in quanto protocollo anonimo che non richiede autenticazione, rimane vulnerabile ad attacchi di tipo "Man In The Middle", in cui una terza parte falsifica fin dall'inizio le informazioni pubbliche scambiate.
+	
+	\bigbreak
+	
+	Uno dei problemi che rimane è la memorizzazione delle chiavi, ma questo coincide con il problema più generale e già discusso (\ref{sec:threat_model}) riguardante la sicurezza dei dati relativi alla VM memorizzati su disco.
 	
 	\newpage
 	
