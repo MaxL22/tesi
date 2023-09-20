@@ -730,7 +730,7 @@
 	
 	\section{Proxy}
 	\label{sec:proxy}
-	L'idea iniziale prevedeva l'utilizzo di una Trusted Application con il ruolo di "proxy" per le richieste destinate alle altre TA. 
+	L'idea originaria prevedeva l'utilizzo di una Trusted Application con il ruolo di "proxy" per fare da intermediario alle richieste destinate ad altre TA. 
 	
 	I compiti a cui il proxy avrebbe dovuto adempire sono: ricevere le richieste del REE, inoltrarle alla TA destinazione ed in seguito rispedire la risposta, il ciò decrittando i dati in entrata e crittografando i dati in uscita.
 	
@@ -825,10 +825,78 @@
 	
 	\newpage
 	
+	\section{Layer di Crittografia}
+	\label{sec:critt}
+	L'obiettivo del progetto, come evidenziato precedentemente, è centrato sulla salvaguardia della confidenzialità dei dati durante le fasi di transito, un problema che la crittografia permette di risolvere. 
+	
+	\bigbreak
+	
+	Il metodo che permette il minor degradamento delle prestazioni è quello di cifrare i dati anticipatamente rispetto alla richiesta ed eseguire il processo di decifratura all'interno della TA di destinazione. 
+	
+	Questo approccio risulta però poco trasparente per l'utente finale in quanto la gestione della crittografia, per quanto possa essere resa standardizzata, rimane di sua competenza, dovendosi occupare di inserire i processi all'interno di applicazione e TA. 
+	
+	\bigbreak 
+	
+	Il primo passo decisionale effettuato ha coinvolto la scelta dell'algoritmo da impiegare: data una maggiore efficienza è velocità di elaborazione si è optato per un protocollo a chiave simmetrica e di conseguenza una semplice implementazione di AES \cite{aes} per la sua adattabilità, sicurezza ad attacchi noti e supporto diffuso. 
+	
+	\bigbreak 
+	
+	Per utilizzare la cifratura, all'interno del REE, sarà necessario chiamare la funzione relativa sul buffer che si intende passare al TEE, cifrandone i contenuti con il segreto ottenuto precedentemente in seguito allo scambio chiavi.
+	
+	All'interno del TEE l'istanza della TA chiamata dovrebbe già essere in possesso della chiave condivisa ed essere in grado di decifrare il buffer, ma prima di fare ciò quest'ultimo va copiato all'interno di un secondo buffer allocato internamente al TEE, in quanto modificare i dati direttamente causerebbe una modifica anche all'interno del REE ed i dati di sincronizzazione tra i due ambienti devono passare tramite l'hypervisor, rendendo inutile il processo.
+	
+	\bigbreak
+	
+	Per ora si è presupposto che i dati inclusi con la richiesta siano locati all'interno di un buffer, ma le specifiche GlobalPlatform \cite{gp2020clientapi} permettono il passaggio di dati con altri metodi, come può essere una semplice coppia di valori.
+	
+	L'attuale implementazione permette solo la crittografia di almeno 128 bit, per specifiche di AES, quindi richiede un buffer dedicato. Ciò può causare problemi in quanto la gestione della struttura di memoria legata ad un buffer risulta molto più costosa in termini di prestazioni rispetto alla semplice coppia di valori, come evidenziato nella sezione relativa alle performance (\ref{sec:dati}).
+	
+	\bigbreak
+	
+	Nella nostra implementazione non è stato fatto, ma sarebbe teoricamente possibile integrare il processo di cifratura della chiamata e decifratura della risposta all'interno dei driver virtuali per il TEE così da semplificarne l'utilizzo, ma non si può avere una soluzione simile all'interno della TA, che quindi richiederà delle modifiche.
+	
+	\newpage
+	
 	\section{Performance}
 	\label{sec:dati}
 	%Analisi performance con l'implementazione
 	%Commentare i risultati, perché alcuni sono 4% altri 100%
+	Sviluppo e test sono stati effettuati su una macchina virtuale QEMU ... 
+	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{ccccccc}
+			\multicolumn{1}{c|}{}                 & 
+			\multicolumn{2}{c|}{\textbf{Normale}} & 
+			\multicolumn{2}{c|}{\textbf{Con Crittografia}} & 
+			\multicolumn{2}{c}{\textbf{Con Proxy}} \\
+			
+			\multicolumn{1}{c|}{\multirow{-2}{*}{\textbf{Test}}} &
+			\multicolumn{1}{c|}{\textbf{Media}}     &
+			\multicolumn{1}{c|}{\textbf{Dev. Std}}  &
+			\multicolumn{1}{c|}{\textbf{Media}}     &
+			\multicolumn{1}{c|}{\textbf{Dev. Std}}  &
+			\multicolumn{1}{c|}{\textbf{Media}}     &  
+			\multicolumn{1}{c}{\textbf{Dev. Std}}  \\ \hline
+			\texttt{random}          & 4,048     & 0,197     & 4,100     & 0,176     & 6,357     & 0,252     \\
+			\texttt{hw}    & 2,189     & 0,139     & 4,560     & 0,203     & 5,655     & 0,218     \\
+		\end{tabular}
+		
+		\hfill \\
+		\hfill \\
+		
+		\begin{tabular}{ccc}
+			\multicolumn{1}{c|}{\textbf{Test}} & \multicolumn{1}{c|}{\textbf{Overhead Crittografia}} & \multicolumn{1}{c}{\textbf{Overhead Proxy}} \\
+			\hline
+			\texttt{random}        & 1,288\%   & 57,033\%  \\
+			\texttt{hw}  & 108,32\%  & 158,33\%  \\
+		\end{tabular}
+		
+		\caption{ Confronto tra le performance delle diverse soluzioni }
+		\label{tab:performance}
+	\end{table}
+	
+	La differenza in performance 
 	
 	\chapter{Conclusioni}
 	\label{cap:conclusioni}
