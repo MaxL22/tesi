@@ -853,15 +853,17 @@
 	
 	\bigbreak
 	
-	Nella nostra implementazione non è stato fatto, ma sarebbe teoricamente possibile integrare il processo di cifratura della chiamata e decifratura della risposta all'interno dei driver virtuali per il TEE così da semplificarne l'utilizzo, ma non si può avere una soluzione simile all'interno della TA, che quindi richiederà delle modifiche.
+	Nella nostra implementazione non è stato implementato, ma sarebbe teoricamente possibile integrare il processo di cifratura della chiamata e decifratura della risposta all'interno dei driver virtuali per il TEE così da semplificarne l'utilizzo. Non si può avere una soluzione simile all'interno della TA, che quindi richiederà comunque delle modifiche.
 	
 	\newpage
 	
 	\section{Performance}
 	\label{sec:dati}
-	%Analisi performance con l'implementazione
-	%Commentare i risultati, perché alcuni sono 4% altri 100%
-	Sviluppo e test sono stati effettuati su una macchina virtuale QEMU ... 
+	Le fasi di sviluppo e test sono state effettuate su una macchina virtuale QEMU la quale simula un processore ARMv8 Cortex-A57 con 4 core e 2GB di RAM, il quale include il supporto a TrustZone. Il Trusted Execution Environment utilizzato è OP-TEE versione 3.21.0.
+	
+	Per i test sono stati adeguati due programmi presenti tra gli esempi di Trusted Application forniti da OP-TEE \cite{optee_examples}. Il primo, \texttt{random}, è un programma che riempie un buffer fornito dal REE con valori casuali prima di restituirlo, mentre il secondo, \texttt{hw}, si occupa semplicemente di incrementare un valore.
+	
+	I valori presenti all'interno della Tabella \ref{tab:performance} costituiscono i tempi per l'esecuzione di 1000 chiamate alla TA relativa. Le misure sono state eseguite 1000 volte e viene riportata la media.  
 	
 	\begin{table}[h]
 		\centering
@@ -896,7 +898,13 @@
 		\label{tab:performance}
 	\end{table}
 	
-	La differenza in performance 
+	Il degradamento delle performance dovuto al proxy è molto elevato, soprattutto nel caso di applicazioni semplici come presentate sopra, fino a risultare inaccettabile.
+	
+	L'overhead della crittografia invece varia drasticamente in base alla struttura dati utilizzata dall'applicazione originaria, in quanto per le operazioni di cifratura è necessario in qualsiasi caso l'utilizzo di un buffer. Se quest'ultimo non risulta presente all'interno della chiamata a TA originale, come per il caso di \texttt{hw}, diventa necessario modificare la struttura della chiamate stessa, aggiungendo anche l'overhead dovuto alla gestione della differente struttura dati, sicuramente più costosa in termini di performance rispetto a quella originaria, in modo anche significativo.
+	
+	\bigbreak 
+	
+	Comunque l'overhead che la soluzione fornisce nel caso di una struttura dati originale compatibile risulta accettabile, tenendo anche conto del fatto che si tratta di un tempo fisso e di conseguenza perderà rilevanza proporzionalmente all'incrementare della complessità del programma presente attorno alla chiamata.
 	
 	\chapter{Conclusioni}
 	\label{cap:conclusioni}
