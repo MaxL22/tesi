@@ -84,12 +84,62 @@
 	\frontespizio
 	\afterpreface
 	
-	\chapter*{Sommario}
-	\addcontentsline{toc}{chapter}{Sommario}  
-	\label{cap:sommario}
+	% \chapter*{Sommario}
+	% \addcontentsline{toc}{chapter}{Sommario}  
+	% \label{cap:sommario}
 	
 	\chapter{Introduzione}
 	\label{sec:introduzione}
+	La sicurezza delle informazioni è diventata uno dei settori più critici e dinamici presenti nel mondo tecnologico odierno. All'interno del contesto di una società sempre più digitalizzata e interconnessa, la protezione dei dati, delle infrastrutture e delle informazioni è diventata una priorità fondamentale per individui, aziende e istituzioni governative. La complessità della tecnologia cresce di pari passo con la complessità delle minacce, rendendo la sicurezza informatica una sfida in continua evoluzione.
+	
+	Con l'evoluzione delle tecnologie cresce la quantità di componenti che devono essere controllati da un punto di vista della sicurezza ed una verifica completa può risultare impegnativa, se non impossibile.
+	
+	\bigbreak
+	
+	Una soluzione che si basa sull'idea di ridurre la superficie che necessita di controlli all'interno di un sistema è l'utilizzo di \textit{Trusted Execution Environments} (TEE). Un TEE è una tecnologia che crea un ambiente isolato e sicuro all'interno di un sistema informatico, dove le operazioni possono essere eseguite in modo protetto e isolato dal resto del sistema, spesso all'interno di componenti fisiche dedicate.
+	
+	In questo modo si può avere un ambiente dove le applicazioni con requisiti di sicurezza elevati possono essere eseguite con la garanzia di policy più stringenti riguardo al trattamento dei dati.
+	
+	Il termine "TEE" può fare riferimento ad un insieme di prodotti che nonostante abbiano caratteristiche comuni presentano notevoli differenze nelle loro implementazioni, come descritto nel capitolo successivo. In generale però tutti necessitano di supporto hardware per separarli dal software non sicuro ed hanno come priorità la sicurezza dei dati al loro interno.
+	
+	\section{TEE e Cloud Computing}
+	\label{sec:tee_intr}
+	
+	I TEE sono stati sviluppati principalmente per l'ambito mobile, in quanto si tratta di un settore sempre più presente all'interno della vita quotidiana di ognuno. Ad oggi sono presenti sulla maggioranza dei dispositivi mobili, dove vengono usati per gestire in modo efficiente una serie di funzioni di sicurezza e di gestione delle chiavi crittografiche. 
+	
+	\bigbreak
+	
+	L'utilizzo dei TEE non è però ristretto agli ambienti mobili e sono di interesse per questo elaborato le possibili interazioni con il \textit{Cloud Computing}.
+	
+	Il modello dell'\textit{Infrastructure as a Service} che si è affermato con il Cloud Computing consiste nella distribuzione dei servizi informatici tramite Internet, consentendo l'accesso e l'uso di risorse computazionali, come server, storage e software, in modo flessibile e scalabile, senza necessità di possedere e gestire infrastrutture fisiche, pagando solamente in base all'utilizzo effettivo.
+	
+	Viene sfruttata la \textit{virtualizzazione} in modo da assegnare ad ogni cliente solo le risorse strettamente necessarie e poter diminuire i costi grazie all'economia di scala dell'infrastruttura.
+	
+	\bigbreak
+	
+	Questo però pone dubbi precedentemente non presenti riguardo la sicurezza dei dati, in quanto tutta l'infrastruttura che li contiene ed elabora non è più sotto la gestione fisica di chi la utilizza. Non si hanno più garanzie sul controllo dati, ad esempio il service provider, per la natura stessa del servizio, può averne accesso completo.
+	
+	\bigbreak 
+	
+	I TEE all'interno del Cloud permetterebbero di fornire protezione ai dati presenti in memoria e durante l'esecuzione. In questo ambito però non sono ancora stati adottati in modo diffuso e le attuali implementazioni richiedono una gestione del TEE completamente a carico dell'utente, metodologia che risulta atipica per il modello di Cloud Computing stesso.
+	
+	\bigbreak
+	
+	Sono già state presentate soluzioni per la condivisione di un TEE attraverso più clienti di un singolo fornitore di servizi Cloud \cite{tesi_cutecchia}, ma fino ad ora era parte delle presupposizioni che il fornitore stesso fosse un ente fidato, concetto che potrebbe decadere nel caso di dati sensibili, come quelli trattati da un TEE.
+	
+	All'interno di questo elaborato verrà quindi trattato il tema della sicurezza dei dati nel momento in cui questi devono transitare dalla macchina ospite al TEE, passando per l'infrastruttura sotto il controllo del service provider.
+	
+	% \newpage
+	
+	% \section{Struttura dell'elaborato}
+	% \label{sec:struttura}
+	% L'elaborato si suddivide in tre capitoli principali:
+	% \begin{itemize}
+		%     \item Nel \textbf{Capitolo \ref{cap:TEE}} viene descritto il concetto di Trusted Execution Environment, assieme alle sue applicazioni ed implementazioni
+		%     \item Nel \textbf{Capitolo \ref{cap:problema}} viene presentato un possibile modello di condivisione TEE per il cloud e le problematiche che ne risultano
+		%     \item Nel \textbf{Capitolo \ref{cap:implementazione}} viene descritta l'implementazione sviluppata per risolvere le problematiche considerate 
+		% \end{itemize}
+	% Oltre a questi sono presenti i capitoli di introduzione e conclusione.
 	
 	\chapter{Trusted Execution Environment}
 	\label{cap:TEE}
@@ -909,6 +959,30 @@
 	\chapter{Conclusioni}
 	\label{cap:conclusioni}
 	%Lavori futuri e conclusioni
+	Il lavoro presentato in questo elaborato si è incentrato sull'integrazione di proprietà di sicurezza all'interno di una soluzione per l'utilizzo di Trusted Execution Environment (TEE) dentro ambienti virtualizzati. Questo tema riveste un'importanza crescente nell'informatica moderna, in quanto sempre più organizzazioni cercano di garantire la sicurezza delle proprie applicazioni e dati sensibili anche in contesti di virtualizzazione e cloud computing.
+	
+	\bigbreak
+	
+	L'obiettivo era fornire un'integrazione sicura per la condivisione di un singolo TEE tra più clienti sulla stessa macchina fisica fornita da un provider, sotto la presupposizione che il fornitore del servizio stesso non sia un'entità fidata, dal punto di vista dei clienti. La progettazione ha dovuto dunque tenere conto di un modello di minaccia accurato considerasse le potenziali minacce da parte del provider di servizi, nonché delle vulnerabilità intrinseche all'integrazione tra ambienti virtualizzati e TEE.
+	
+	La soluzione ottenuta consentirebbe ai clienti di sfruttare le potenzialità dei TEE all'interno di ambienti virtualizzati senza compromettere la sicurezza delle proprie applicazioni e dati, comunque mantenendo un modello di servizio che permette di delegare completamente la gestione dell'hardware. Questo rappresenta un passo verso la creazione di ambienti virtualizzati sicuri e affidabili in cui i TEE possono svolgere un ruolo chiave nella protezione dei dati e delle applicazioni.
+	
+	\bigbreak
+	
+	L'impatto sulle performance risulta accettabile, anche se non per tutti i tipi applicazioni pratiche. Nonostante ciò la casistica migliore per l'approccio portato risulta la più comune all'atto pratico, quindi questo non è stato considerato un problema particolarmente rilevante, seppur intrinseco all'implementazione stessa per come questa è stata effettuata.
+	
+	\section{Lavori Futuri}
+	\label{sec:lavori_futuri}
+	L'implementazione portata per questo elaborato pone enfasi sull'aspetto riguardante la fattibilità del progetto e trascura elementi che risulterebbero importanti per l'utilizzo pratico, come già menzionato precedentemente. 
+	
+	Ad esempio tutto l'aspetto del progetto che riguarda la trasparenza di utilizzo per l'utente finale può avere dei miglioramenti, integrando per quanto possibile le soluzioni presentate all'interno dei driver TEE virtuali. Idealmente si potrebbe arrivare a togliere quasi completamente dall'interno delle macchine guest la gestione delle proprietà di sicurezza.  
+	
+	\bigbreak
+	
+	Inoltre si potrebbe sviluppare a partire dal problema, per ora non trattato, della memorizzazione delle chiavi all'interno delle macchine virtuali. Tra le altre cose, le presupposizioni considerate in questo elaborato includono, come minimo, un segmento di memoria al di fuori del controllo dell'hypervisor.
+	
+	Questo richiederebbe soluzioni come l'implementazione di codice a livello firmware per ottenere questo risultato, oppure l'utilizzo di tecnologie per la sicurezza dei dati all'interno della VM, come possono essere AMD SEV o ARM CCA. Queste non sono state utilizzate per lo sviluppo di questo progetto, ma sarebbero integrabili in quanto tutta la struttura presentata risulta agnostica all'ambiente sottostante, è sufficiente sia compatibile con le specifiche GlobalPlatform.
+	
 	
 	\bibliographystyle{unsrt}
 	\bibliography{bibliografia}
