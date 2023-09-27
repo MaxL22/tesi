@@ -1,0 +1,43 @@
+\documentclass[12pt,italian]{report}
+\usepackage{tesi}
+
+\usepackage[a4paper]{geometry}		% Formato del foglio
+\usepackage[italian]{babel}			% Supporto per l'italiano
+\usepackage[utf8]{inputenc}			% Supporto per UTF-8
+\usepackage[a-1b]{pdfx}				% File conforme allo standard PDF-A (obbligatorio per la consegna)
+\usepackage{eso-pic}
+
+\usepackage{graphicx}				% Funzioni avanzate per le immagini
+\usepackage{hologo}					% Bibtex logo with \hologo{BibTeX}
+\usepackage{epsfig}				% Permette immagini in EPS
+\usepackage{xcolor}				% Gestione avanzata dei colori
+\usepackage{amssymb,amsmath,amsthm} % Simboli matematici
+\usepackage{listings}				% Scrittura di codice
+\usepackage{url}					% Visualizza e rendere interattii gli URL
+\usepackage{hyperref}				% Rende interattivi i collegamenti interni
+\usepackage{tikz}                   % Permette di disegnare inline
+\usepackage{import}
+\usepackage{float}
+\usepackage{xstring}                % Permette di usare la funzione \IfInteger
+\usepackage{array}                  % Permette di usare colonne "m" dentro table
+\usepackage{riassunto}              % Personalizzazioni per il riassunto
+\graphicspath{{immagini/}}
+
+\begin{document}
+
+\chapter*{Riassunto elaborato}
+
+\AddToShipoutPicture*
+    {\put(450,593){\includegraphics[width=23mm,height=23mm]{immagini/unimi}}}
+
+\textbf{Titolo elaborato:} VirTEE: implementazione di un protocollo per la condivisione TEE in Cloud
+
+\vskip 0.8 cm
+
+\medbreak
+
+\bibliographystyle{unsrt}
+\bibliography{bibliografia}
+\addcontentsline{toc}{chapter}{Bibliografia}
+
+\end{document}
