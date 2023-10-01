@@ -92,15 +92,15 @@
 	\label{sec:introduzione}
 	La sicurezza delle informazioni è diventata uno dei settori più critici e dinamici presenti nel mondo tecnologico odierno. All'interno del contesto di una società sempre più digitalizzata e interconnessa, la protezione dei dati, delle infrastrutture e delle informazioni è diventata una priorità fondamentale per individui, aziende e istituzioni governative. La complessità della tecnologia cresce di pari passo con la complessità delle minacce, rendendo la sicurezza informatica una sfida in continua evoluzione.
 	
-	Con l'evoluzione delle tecnologie cresce la quantità di componenti che devono essere controllati da un punto di vista della sicurezza ed una verifica completa può risultare impegnativa, se non impossibile.
+	Con l'evoluzione delle tecnologie cresce la quantità di componenti che devono essere controllati da un punto di vista della sicurezza ed una verifica completa può risultare difficile, se non impossibile.
 	
 	\bigbreak
 	
-	Una soluzione che si basa sull'idea di ridurre la superficie che necessita di controlli all'interno di un sistema è l'utilizzo di \textit{Trusted Execution Environments} (TEE). Un TEE è una tecnologia che crea un ambiente isolato e sicuro all'interno di un sistema informatico, dove le operazioni possono essere eseguite in modo protetto e isolato dal resto del sistema, spesso all'interno di componenti fisiche dedicate.
+	Una soluzione, basata sull'idea di ridurre la superficie che necessita di controlli all'interno di un sistema, consiste nell'utilizzo dei \textit{Trusted Execution Environments} (TEE). Un TEE è una tecnologia che crea un ambiente isolato e sicuro all'interno di un sistema informatico, dove possono essere eseguite operazioni in modo protetto e isolato dal resto del sistema, spesso all'interno di componenti fisiche dedicate.
 	
-	In questo modo si può avere un ambiente dove le applicazioni con requisiti di sicurezza elevati possono essere eseguite con la garanzia di policy più stringenti riguardo al trattamento dei dati.
+	In questo modo si può avere un ambiente dove le applicazioni con requisiti di sicurezza elevati possono essere eseguite con la garanzia di policy più stringenti riguardo come vengono trattati i dati.
 	
-	Il termine "TEE" può fare riferimento ad un insieme di prodotti che nonostante abbiano caratteristiche comuni presentano notevoli differenze nelle loro implementazioni, come descritto nel capitolo successivo. In generale però tutti necessitano di supporto hardware per separarli dal software non sicuro ed hanno come priorità la sicurezza dei dati al loro interno.
+	Il termine "TEE" può fare riferimento ad un insieme di prodotti che, nonostante abbiano caratteristiche comuni, presentano notevoli differenze nelle loro implementazioni, come viene descritto nel capitolo successivo. In generale però tutti necessitano di supporto hardware per separarli dal software non sicuro ed hanno come priorità la sicurezza dei dati al loro interno.
 	
 	\section{TEE e Cloud Computing}
 	\label{sec:tee_intr}
@@ -109,7 +109,7 @@
 	
 	\bigbreak
 	
-	L'utilizzo dei TEE non è però ristretto agli ambienti mobili e sono di interesse per questo elaborato le possibili interazioni con il \textit{Cloud Computing}.
+	L'utilizzo dei TEE non è però ristretto agli ambienti mobili e sono di interesse per questo elaborato le possibili interazioni che questi possono avere con il \textit{Cloud Computing}.
 	
 	Il modello dell'\textit{Infrastructure as a Service} che si è affermato con il Cloud Computing consiste nella distribuzione dei servizi informatici tramite Internet, consentendo l'accesso e l'uso di risorse computazionali, come server, storage e software, in modo flessibile e scalabile, senza necessità di possedere e gestire infrastrutture fisiche, pagando solamente in base all'utilizzo effettivo.
 	
@@ -121,7 +121,7 @@
 	
 	\bigbreak 
 	
-	I TEE all'interno del Cloud permetterebbero di fornire protezione ai dati presenti in memoria e durante l'esecuzione. In questo ambito però non sono ancora stati adottati in modo diffuso e le attuali implementazioni richiedono una gestione del TEE completamente a carico dell'utente, metodologia che risulta atipica per il modello di Cloud Computing stesso.
+	L'utilizzo di TEE all'interno dell'ambiente Cloud permetterebbe di fornire protezione ai dati sia quando questi sono presenti in memoria che durante l'esecuzione. In questo ambito però non sono ancora stati adottati in modo diffuso e le attuali implementazioni richiedono generalmente una gestione del TEE completamente a carico dell'utente, metodologia che risulta atipica per il modello di Cloud Computing stesso.
 	
 	\bigbreak
 	
@@ -160,7 +160,7 @@
 	\section{TEE GlobalPlatform}
 	\label{sec:GlobalPlatform}
 	%Deve contenere: cos'è globalplatform, architettura, cosa ne consegue (che sicurezza e cosa forniscono)
-	Il concetto di "Trusted Execution Environment" denota una combinazione di tecniche software e hardware progettate per creare un ambiente sicuro e protetto. Nonostante ciò, il termine risulta piuttosto generico, in quanto fa riferimento a una vasta gamma di prodotti con caratteristiche implementative e livelli di sicurezza diversi.
+	Il concetto di "Trusted Execution Environment" denota una combinazione di tecniche software e hardware progettate per creare un ambiente sicuro e protetto. Nonostante ciò il termine risulta piuttosto generico, in quanto fa riferimento a una vasta gamma di prodotti con caratteristiche implementative e livelli di sicurezza diversi.
 	
 	L'assenza di standardizzazione potrebbe essere causa di confusione tra i consumatori e diventare un ostacolo per la portabilità ed interoperabilità di Trusted Applications (TA) su diverse implementazioni di TEE. Ciò implica la necessità di gestire una gamma di differenze nell'implementazione e garanzie di sicurezza offerte, complicando l'utilizzo di tali ambienti in modo uniforme e trasversale.
 	
@@ -248,7 +248,7 @@
 	
 	Nel mondo TEE questa idea viene ripresa tramite l'implementazione di un \textit{separation kernel}, l'elemento usato per simulare un sistema distribuito, come evidenziato da Sabt et al \cite{sabt2015tee}. Questo permette la coesistenza di diversi sistemi, con diversi requisiti di sicurezza, sulla stessa piattaforma. Fondamentalmente divide il sistema in partizioni e garantisce isolamento tra di esse, tranne per alcune interfacce controllate.
 	
-	I requisiti di sicurezza generali del separation kernel si possono trovare all'interno del \textit{Separation Kernel Protection Profile} (SPKK) \cite{spkk2007}, ma si possono riassumere in quattro policy di sicurezza principali: 
+	I requisiti di sicurezza generali del separation kernel si possono trovare all'interno del \textit{Separation Kernel Protection Profile} (SKPP) \cite{spkk2007}, ma si possono riassumere in quattro policy di sicurezza principali: 
 	\begin{itemize}
 		\item \textit{Data (spatial) separation:} dati all'interno di una partizione non possono essere letti o modificati da altre partizioni.
 		\item \textit{Sanitization (temporal separation):} le risorse condivise non devono permettere la fuoriuscita di informazioni ad altre partizioni.
@@ -258,7 +258,7 @@
 	
 	La separazione di servizi importanti e dati sensibili permette di minimizzare la possibile superficie d'attacco di un sistema, in quanto la compromissione di un componente non causa danni alle altre parti del sistema. L'unica eccezione sarebbe un fallimento del separation kernel stesso, che per questo motivo deve rimanere più semplice possibile. 
 	
-	Nella pratica il sistema distribuito descritto da Rushby si compone di due sole componenti, REE e TEE, in quanto tutte le implementazioni effettive prevedono un solo TEE.
+	Nella pratica il sistema distribuito descritto da Rushby consiste di due sole componenti, REE e TEE, in quanto tutte le implementazioni effettive prevedono un solo TEE.
 	
 	\newpage
 	
@@ -316,7 +316,7 @@
 	
 	L'implementazione Android del secure storage è \textit{Android Keystore} \cite{androidkeystore}, che fa ampio uso del sistema \textit{Trusty TEE} \cite{androidtrustytee}, basato su ARM TrustZone. Questo sistema offre una API per gestire in modo sicuro e protetto le chiavi e i certificati all'interno del TEE, in modo da permettere alle applicazioni di usarlo per operazioni di crittografia, firma digitale e autenticazione.
 	
-	Inoltre, il sistema Android Keystore offre funzionalità avanzate, come la generazione delle chiavi direttamente all'interno del TEE, senza mai esporre le chiavi al sistema operativo principale. 
+	Inoltre, il sistema Android Keystore offre funzionalità avanzate, come la generazione delle chiavi direttamente all'interno del TEE, senza mai esporle al sistema operativo principale. 
 	
 	\bigbreak
 	
@@ -750,11 +750,15 @@
 	
 	\section{Threat Model}
 	\label{sec:threat_model}
-	Fino ad ora il normale threat model relativo al cloud computing ha richiesto di considerare "trusted" l'hypervisor in quanto la possibilità di accesso ai dati delle macchine virtuali ospitate risulta conseguenza delle necessità di mantenimento dell'infrastruttura del servizio.
+	Fino ad ora il normale modello di minaccia relativo al cloud computing ha richiesto di considerare come fidato l'hypervisor in quanto la possibilità di accesso ai dati delle macchine virtuali ospitate risulta conseguenza delle necessità di mantenimento dell'infrastruttura del servizio.
 	
-	Con il modello presentato possono però nascere alcuni dubbi riguardo la privacy dei dati: non si ha nessuna garanzia che il service provider sia un ente fidato, inoltre non è da escludere la possibilità che il software di cui si compone l'infrastruttura possa essere compromesso.
+	Con il modello presentato possono però nascere alcuni dubbi riguardo la privacy dei dati: non si ha nessuna garanzia che il service provider sia un ente fidato, inoltre non è da escludere la possibilità che il software di cui si compone l'infrastruttura stessa possa essere compromesso.
 	
 	\bigbreak
+	
+	I dati all'interno di una macchina virtuale possono essere stazionari, all'interno della memoria dedicata alla VM, in transito, dalla macchina al TEE, oppure all'interno del Trusted Execution Environment.
+	
+	I dati all'interno del TEE sono considerati sicuri, in quanto prerogativa di funzionamento del TEE stesso.
 	
 	Per la sicurezza dei dati stazionari all'interno della VM sono necessarie tecnologie come può essere AMD SEV (\ref{subsec:sev}), le quali permettono l'isolamento e la crittografia della memoria relativa ad una macchina virtuale in modo che sia inaccessibile anche all'hypervisor.
 	
@@ -764,13 +768,13 @@
 	
 	Da qui in poi l'hypervisor verrà quindi considerato come \textit{untrusted} e l'obiettivo delle soluzioni presentate sarà quello di garantire integrità e confidenzialità dei dati relativi alle VM che ospita. Il possibile attaccante coincide con l'hypervisor stesso, in quanto ente ostile in sé o per merito di compromissioni esterne, come ad esempio dovute a vulnerabilità del software.
 	
-	Non vengono considerati possibili attacchi alla disponibilità dei dati in quanto si presuppone che il fornitore di un servizio abbia interesse a mantenere disponibile il servizio stesso.
+	Non vengono considerati possibili attacchi alla disponibilità dei dati in quanto si presuppone che un service provider abbia interesse a mantenere disponibile il servizio stesso.
 	
 	\chapter{Implementazione}
 	\label{cap:implementazione}
 	%Nome WIP. Dettagli riguardo all'implementazione, soluzioni tecniche trovate
 	
-	L'utilizzo del passthrough, come descritto nel capitolo precedente, presenta delle limitazioni in termini di sicurezza. Questo perché, quando si manipolano dati sensibili all'interno di macchine al di fuori del proprio controllo fisico deve essere considerato un nuovo threat model e le implicazioni relative. 
+	L'utilizzo del passthrough, come descritto nel capitolo precedente, presenta delle limitazioni in termini di sicurezza. Questo perché, quando si manipolano dati sensibili all'interno di macchine al di fuori del proprio controllo fisico deve essere considerato un nuovo threat model e le relative implicazioni. 
 	
 	L'obiettivo è quindi quello di proporre soluzioni atte a garantire riservatezza dei dati, i quali, a causa della natura della virtualizzazione, sono necessariamente soggetti al controllo dell'hypervisor.
 	
@@ -792,7 +796,7 @@
 	
 	\bigbreak
 	
-	Il problema con questo metodo è che necessita di effettivamente raddoppiare il numero di chiamate a TA che vengono eseguite, aggiungendo un overhead che può arrivare, per applicazioni semplici, a superare il tempo di esecuzione della chiamata senza proxy, come mostrato nel capitolo \ref{sec:dati}. Anche senza l'introduzione della crittografia il calo di performance risulta non accettabile.
+	Il problema con questo metodo è che viene effettivamente raddoppiato il numero di chiamate a TA eseguite, aggiungendo un overhead che può arrivare, per applicazioni semplici, a superare il tempo di esecuzione della chiamata senza proxy, come mostrato nella sezione \ref{sec:dati}. Anche senza l'introduzione della crittografia il calo di performance risulta non accettabile.
 	
 	\bigbreak
 	
@@ -821,7 +825,7 @@
 	\label{sec:scambio_chiavi}
 	Al fine di stabilire una comunicazione sicura uno dei passaggi fondamentali è lo scambio delle chiavi. Senza avere un segreto comune tra le parti non è possibile l'applicazione di alcun algoritmo crittografico simmetrico.
 	
-	Diventa quindi necessario l'utilizzo di tecniche le quali permettono di stabilire una chiave segreta condivisa senza doverla comunicare direttamente attraverso canali non sicuri, come può essere la mediazione dell'hypervisor.
+	Diventa quindi necessario l'utilizzo di tecniche che permettono di stabilire una chiave segreta condivisa senza doverla comunicare direttamente attraverso canali non sicuri, come può essere la mediazione dell'hypervisor.
 	
 	\subsection{Diffie-Hellman}
 	\label{subsec:dh}
@@ -843,19 +847,19 @@
 	
 	\subsection{Procedura per lo Scambio}
 	\label{subsec:proc_scambio}
-	All'interno del nostro sistema le due parti considerate sono TEE e REE. Per lo scambio effettivo è stata aggiunta una TA con il ruolo di mediatore per lo scambio. Non si tratta di una scelta obbligata ma porta il vantaggio di poter ridurre il codice da aggiungere alle TA di destinazione. 
+	All'interno del nostro sistema le due parti considerate sono TEE e REE. Per lo scambio effettivo è stata aggiunta una TA con il ruolo di mediatore per lo scambio. Non si tratta di una scelta obbligata ma permette di ridurre il codice da aggiungere alle TA di destinazione, riusando sempre lo stesso. 
 	
 	\bigbreak
 	
-	Lo scambio viene diviso in due parti: per iniziare vengono generate la chiave pubblica e privata del REE (generatore e numero primo sono statici) ed inviate alla TA "broker", assieme all'identificativo della TA di destinazione.
+	Lo scambio viene diviso in due parti: per iniziare vengono generate la chiave pubblica e privata del REE (per semplicità generatore e numero primo sono statici) ed inviate alla TA "broker", assieme all'identificativo della TA di destinazione.
 	
 	In seguito alla chiamata la TA broker genererà la sua coppia di valori ed in questo modo possiede già tutte le informazioni necessarie per calcolare la chiave segreta. 
 	
 	La TA broker infine invoca la TA di destinazione per allocare la chiave segreta calcolata nel suo secure storage, un ambiente che permette il salvataggio di dati permanenti e condivisi tra diverse istanze della stessa TA. Viene considerato sicuro lo scambio di dati tra TA, in quanto interno al TEE stesso.
 	
-	La risposta all'applicazione conterrà la chiave pubblica, così da permettere il calcolo della chiave segreta anche nel REE.
+	La risposta all'applicazione conterrà la chiave pubblica della TA, così da permettere il calcolo della chiave segreta anche nel REE.
 	
-	Prima di poter utilizzare effettivamente la chiave bisogna dare indicazione alla specifica istanza della TA destinazione di recuperare la chiave dal suo secure storage, tramite il comando \texttt{GET\_KEY}, da chiamare solamente una sola volta per sessione, prima dell'esecuzione di altri comandi.
+	Prima di poter utilizzare effettivamente la chiave bisognerà dare indicazione alla specifica istanza della TA destinazione di recuperare la chiave dal suo secure storage, tramite il comando \texttt{GET\_KEY}, da chiamare solamente una sola volta per sessione, prima dell'esecuzione di altri comandi.
 	
 	\bigbreak 
 	
@@ -863,27 +867,27 @@
 	
 	\bigbreak
 	
-	Questo metodo introduce un overhead aggiuntivo, il quale però perde rilevanza in maniera proporzionale all'incrementare del numero chiamate ad una stessa istanza della TA, in quanto si tratta di un tempo fisso da aggiungere all'inizializzazione della sessione. 
+	Questo metodo introduce un overhead aggiuntivo, il quale però perde rilevanza proporzionalmente all'incrementare del numero chiamate ad una stessa istanza della TA, in quanto si tratta di un tempo fisso da aggiungere all'inizializzazione della sessione. 
 	
 	\bigbreak
 	
-	Questo algoritmo può essere considerato sicuro contro la sola intercettazione ma, in quanto protocollo anonimo che non richiede autenticazione, rimane vulnerabile ad attacchi di tipo "Man In The Middle", in cui una terza parte falsifica fin dall'inizio le informazioni pubbliche scambiate.
+	Questo algoritmo può essere considerato sicuro contro la sola intercettazione ma, in quanto protocollo anonimo senza autenticazione, rimane vulnerabile ad attacchi di tipo "Man In The Middle", in cui una terza parte falsifica fin dall'inizio le informazioni pubbliche scambiate.
 	
 	\bigbreak
 	
-	Uno dei problemi che rimane è la memorizzazione delle chiavi, ma questo coincide con il problema più generale e già discusso (\ref{sec:threat_model}) riguardante la sicurezza dei dati relativi alla VM memorizzati su disco.
+	Uno dei problemi che rimane è la memorizzazione delle chiavi, ma questo coincide con il problema più generale e già discusso (\ref{sec:threat_model}) riguardante la sicurezza dei dati relativi alla VM quando questi sono memorizzati su disco.
 	
 	\newpage
 	
 	\section{Layer di Crittografia}
 	\label{sec:critt}
-	L'obiettivo del progetto, come evidenziato precedentemente, è centrato sulla salvaguardia della confidenzialità dei dati durante le fasi di transito, un problema che la crittografia permette di risolvere. 
+	L'obiettivo del progetto, come evidenziato precedentemente, è centrato sulla protezione della confidenzialità dei dati durante le fasi di transito, un problema che la crittografia permette di risolvere. 
 	
 	\bigbreak
 	
 	Il metodo che permette il minor degradamento delle prestazioni è quello di cifrare i dati anticipatamente rispetto alla richiesta ed eseguire il processo di decifratura all'interno della TA di destinazione. 
 	
-	Questo approccio risulta però poco trasparente per l'utente finale in quanto la gestione della crittografia, per quanto possa essere resa standardizzata, rimane di sua competenza, dovendosi occupare di inserire i processi all'interno di applicazione e TA. 
+	Questo approccio risulta però poco trasparente per l'utente finale in quanto la gestione della crittografia, per quanto possa essere resa standardizzata, rimane di sua competenza, dovendosi occupare di inserire i processi necessari all'interno di applicazione e TA. 
 	
 	\bigbreak 
 	
@@ -903,7 +907,7 @@
 	
 	\bigbreak
 	
-	Nella nostra implementazione non è stato implementato, ma sarebbe teoricamente possibile integrare il processo di cifratura della chiamata e decifratura della risposta all'interno dei driver virtuali per il TEE così da semplificarne l'utilizzo. Non si può avere una soluzione simile all'interno della TA, che quindi richiederà comunque delle modifiche.
+	Nella nostra soluzione non è stato implementato, ma sarebbe possibile integrare il processo di cifratura della chiamata e decifratura della risposta all'interno dei driver virtuali per il TEE descritti nel capitolo precedente, così da semplificare l'utilizzo del sistema. Non si può avere una soluzione equivalente all'interno della TA, che quindi richiederà comunque delle modifiche.
 	
 	\newpage
 	
@@ -913,7 +917,7 @@
 	
 	Per i test sono stati adeguati due programmi presenti tra gli esempi di Trusted Application forniti da OP-TEE \cite{optee_examples}. Il primo, \texttt{random}, è un programma che riempie un buffer fornito dal REE con valori casuali prima di restituirlo, mentre il secondo, \texttt{hw}, si occupa semplicemente di incrementare un valore.
 	
-	I valori presenti all'interno della Tabella \ref{tab:performance} costituiscono i tempi per l'esecuzione di 1000 chiamate alla TA relativa. Le misure sono state eseguite 1000 volte e viene riportata la media.  
+	I valori presenti all'interno della Tabella \ref{tab:performance} costituiscono i tempi per l'esecuzione di 1000 chiamate alla TA relativa. Le misure sono state eseguite 1000 volte e viene riportata media e deviazione standard.  
 	
 	\begin{table}[h]
 		\centering
@@ -948,9 +952,9 @@
 		\label{tab:performance}
 	\end{table}
 	
-	Il degradamento delle performance dovuto al proxy è molto elevato, soprattutto nel caso di applicazioni semplici come presentate sopra, fino a risultare inaccettabile.
+	Il degradamento delle performance dovuto al proxy, come anticipato, è molto elevato, soprattutto nel caso di applicazioni semplici come presentate sopra, tanto da risultare inaccettabile.
 	
-	L'overhead della crittografia invece varia drasticamente in base alla struttura dati utilizzata dall'applicazione originaria, in quanto per le operazioni di cifratura è necessario in qualsiasi caso l'utilizzo di un buffer. Se quest'ultimo non risulta presente all'interno della chiamata a TA originale, come per il caso di \texttt{hw}, diventa necessario modificare la struttura della chiamate stessa, aggiungendo anche l'overhead dovuto alla gestione della differente struttura dati, sicuramente più costosa in termini di performance rispetto a quella originaria, in modo anche significativo.
+	L'overhead della crittografia invece varia drasticamente in base alla struttura dati utilizzata dall'applicazione originaria, in quanto per le operazioni di cifratura è sempre necessario l'utilizzo di un buffer. Se quest'ultimo non risulta presente all'interno della chiamata a TA originale, come per il caso di \texttt{hw}, diventa necessario modificare la struttura della chiamata stessa, aggiungendo anche l'overhead dovuto alla gestione della differente struttura dati, sicuramente più costosa in termini di performance rispetto a quella originaria, in modo anche significativo.
 	
 	\bigbreak 
 	
@@ -963,25 +967,25 @@
 	
 	\bigbreak
 	
-	L'obiettivo era fornire un'integrazione sicura per la condivisione di un singolo TEE tra più clienti sulla stessa macchina fisica fornita da un provider, sotto la presupposizione che il fornitore del servizio stesso non sia un'entità fidata, dal punto di vista dei clienti. La progettazione ha dovuto dunque tenere conto di un modello di minaccia accurato considerasse le potenziali minacce da parte del provider di servizi, nonché delle vulnerabilità intrinseche all'integrazione tra ambienti virtualizzati e TEE.
+	L'obiettivo era fornire un'integrazione sicura per la condivisione di un singolo TEE tra più clienti sulla stessa macchina fisica fornita da un provider, sotto la presupposizione che il fornitore del servizio stesso non sia un'entità fidata, dal punto di vista dei clienti. La progettazione ha dovuto dunque tenere conto di un modello di minaccia che permette di tenere in considerazione le potenziali minacce  rappresentate dal provider dei servizi, nonché delle vulnerabilità intrinseche all'integrazione tra ambienti virtualizzati e TEE.
 	
-	La soluzione ottenuta consentirebbe ai clienti di sfruttare le potenzialità dei TEE all'interno di ambienti virtualizzati senza compromettere la sicurezza delle proprie applicazioni e dati, comunque mantenendo un modello di servizio che permette di delegare completamente la gestione dell'hardware. Questo rappresenta un passo verso la creazione di ambienti virtualizzati sicuri e affidabili in cui i TEE possono svolgere un ruolo chiave nella protezione dei dati e delle applicazioni.
+	La soluzione ottenuta consentirebbe ai clienti di sfruttare le potenzialità dei TEE all'interno di ambienti virtualizzati senza compromettere la sicurezza delle proprie applicazioni e dati, comunque mantenendo un modello di servizio che permette di delegare in maniera completa la gestione dell'hardware. Questo rappresenta un passo verso la creazione di ambienti virtualizzati sicuri e affidabili in cui i TEE possono svolgere un ruolo chiave nella protezione dei dati e delle applicazioni.
 	
 	\bigbreak
 	
-	L'impatto sulle performance risulta accettabile, anche se non per tutti i tipi applicazioni pratiche. Nonostante ciò la casistica migliore per l'approccio portato risulta la più comune all'atto pratico, quindi questo non è stato considerato un problema particolarmente rilevante, seppur intrinseco all'implementazione stessa per come questa è stata effettuata.
+	L'impatto sulle performance risulta accettabile, anche se non per tutti i tipi applicazioni pratiche. Nonostante ciò la casistica migliore per l'approccio portato risulta la più comune all'atto pratico, quindi questo non è stato considerato un problema rilevante, seppur intrinseco all'implementazione stessa per come questa è stata effettuata.
 	
 	\section{Lavori Futuri}
 	\label{sec:lavori_futuri}
-	L'implementazione portata per questo elaborato pone enfasi sull'aspetto riguardante la fattibilità del progetto e trascura elementi che risulterebbero importanti per l'utilizzo pratico, come già menzionato precedentemente. 
+	L'implementazione portata per questo elaborato pone enfasi sull'aspetto riguardante la fattibilità del progetto e trascura elementi che potrebbero rivelarsi importanti per l'utilizzo pratico, come già menzionato precedentemente. 
 	
-	Ad esempio tutto l'aspetto del progetto che riguarda la trasparenza di utilizzo per l'utente finale può avere dei miglioramenti, integrando per quanto possibile le soluzioni presentate all'interno dei driver TEE virtuali. Idealmente si potrebbe arrivare a togliere quasi completamente dall'interno delle macchine guest la gestione delle proprietà di sicurezza.  
+	L'aspetto del progetto che riguarda la trasparenza di utilizzo per l'utente finale può avere dei miglioramenti, integrando per quanto possibile le soluzioni presentate all'interno dei driver TEE virtuali ed in generale all'interno delle soluzioni preesistenti. Idealmente si potrebbe arrivare a togliere quasi del tutto la gestione delle proprietà di sicurezza dall'interno delle macchine guest.  
 	
 	\bigbreak
 	
 	Inoltre si potrebbe sviluppare a partire dal problema, per ora non trattato, della memorizzazione delle chiavi all'interno delle macchine virtuali. Tra le altre cose, le presupposizioni considerate in questo elaborato includono, come minimo, un segmento di memoria al di fuori del controllo dell'hypervisor.
 	
-	Questo richiederebbe soluzioni come l'implementazione di codice a livello firmware per ottenere questo risultato, oppure l'utilizzo di tecnologie per la sicurezza dei dati all'interno della VM, come possono essere AMD SEV o ARM CCA. Queste non sono state utilizzate per lo sviluppo di questo progetto, ma sarebbero integrabili in quanto tutta la struttura presentata risulta agnostica all'ambiente sottostante, è sufficiente sia compatibile con le specifiche GlobalPlatform.
+	Questo richiederebbe soluzioni come l'implementazione di codice a livello firmware per ottenere questo risultato, oppure l'utilizzo di tecnologie per la sicurezza dei dati all'interno della VM, come possono essere AMD SEV o ARM CCA. Queste non sono state utilizzate per lo sviluppo di questo progetto, ma sarebbero integrabili in quanto tutta la struttura presentata risulta agnostica all'ambiente sottostante, se quest'ultimo è compatibile con le specifiche GlobalPlatform.
 	
 	
 	\bibliographystyle{unsrt}

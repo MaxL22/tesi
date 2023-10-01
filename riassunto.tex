@@ -43,15 +43,15 @@
 	
 	\medbreak
 	
-	Questi sono stati sviluppati principalmente con in mente gli ambienti mobili e ad oggi sono ampiamente utilizzati in questo ambito, ad esempio per la gestione delle chiavi crittografiche \cite{androidkeystore} o per la protezione dei contenuti multimediali \cite{widevine} \cite{playready}.
+	Questi sono stati sviluppati principalmente con in mente gli ambienti mobili e ad oggi sono ampiamente utilizzati in questo contesto, ad esempio per la gestione delle chiavi crittografiche \cite{androidkeystore} o per la protezione dei contenuti multimediali \cite{widevine} \cite{playready}.
 	
-	Con la sempre crescente rilevanza del cloud computing si è cominciato ad avere interesse nell'utilizzo dei TEE anche in questo ambito \cite{demigha2021hardware} \cite{dai2010tee}, in quanto si tratta di soluzioni di sicurezza imposte tramite hardware e di conseguenza trasparenti anche per i clienti riguardo alle garanzie e rischi che ne conseguono.
+	Con la sempre crescente rilevanza del cloud computing si è però cominciato ad avere interesse nell'utilizzo dei TEE anche in questo ambito \cite{demigha2021hardware} \cite{dai2010tee}, in quanto si tratta di soluzioni di sicurezza hardware e di conseguenza trasparenti anche per i clienti riguardo alle garanzie e rischi che portano.
 	
 	\medbreak
 	
 	Le soluzioni generalmente considerate per l'utilizzo di TEE in cloud prevedono che l'utente debba portare il suo TEE, con le complicazioni dovute alla gestione dello stesso. 
 	
-	Per evitare le complessità di gestione si è cercato un modello alternativo che permetta al cloud service provider di fornire il TEE come parte dei servizi \cite{tesi_cutecchia}, senza essere in contrasto con il modello precedente ma offrendo un'alternativa. 
+	Per evitare queste complessità di gestione si è cercato un modello alternativo che permetta al cloud service provider di fornire il TEE come parte dei servizi \cite{tesi_cutecchia}, senza essere in contrasto con il modello precedente ma offrendo un'alternativa. 
 	
 	Questo metodo però porta a nuovi dubbi riguardo soprattutto la confidenzialità dei dati. Il fornitore del servizio rimane intermediario tra macchine virtuali ospitate e TEE, quindi con la possibilità di accedere ai dati scambiati. Tradizionalmente, per natura del servizio stesso, il fornitore è sempre stato considerato un ente fidato ma questo concetto non vale più per dati che richiedono sicurezza elevata, come potrebbero essere quelli trattati da un TEE. 
 	
@@ -70,7 +70,6 @@
 	Ad esempio, in questo elaborato non è stato trattato il problema di memorizzazione delle chiavi crittografiche, che sarebbero visibili service provider. Inoltre sono possibili miglioramenti anche dal punto di vista di trasparenza ed usabilità da parte dell'utente finale.
 	
 	Per concludere, questo lavoro può essere considerato un ulteriore passo aventi nella direzione un'implementazione completa.
-	
 	
 	\bibliographystyle{unsrt}
 	\bibliography{bibliografia}
