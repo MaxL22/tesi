@@ -39,13 +39,13 @@
 	
 	Nell'era digitale, la crescente importanza della sicurezza delle informazioni e della protezione dei dati ha posto l'attenzione su nuove sfide e soluzioni innovative per garantire la confidenzialità e l'integrità delle informazioni sensibili. Tra le molteplici tecnologie e approcci sviluppati per affrontare tali sfide, i \textit{Trusted Execution Environments} (TEE) emergono come uno strumento importante per la sicurezza informatica.
 	
-	I TEE sono "ambienti di esecuzione che funzionano parallelamente, ma in modo isolato, dal sistema operativo principale del sistema" \cite{gp2020systemarchitecture}. Permettono di eseguire software con requisiti di sicurezza particolarmente elevati in un ambiente separato dalla classica gerarchia di privilegio del sistema, tramite una base software e hardware separata e di dimensione ridotta, tendendo a minimizzare la superficie di attacco per possibili minacce.
+	I TEE sono "ambienti di esecuzione che funzionano parallelamente, ma in modo isolato, dal sistema operativo principale del sistema" \cite{gp2020systemarchitecture}. Permettono di eseguire software con requisiti di sicurezza particolarmente elevati in un ambiente separato dalla classica gerarchia di privilegio del sistema. Sono composti da una base software e hardware separata e di dimensione ridotta, cercando di minimizzare la superficie di attacco per possibili minacce.
 	
 	\medbreak
 	
 	Questi sono stati sviluppati principalmente con in mente gli ambienti mobili e ad oggi sono ampiamente utilizzati in questo contesto, ad esempio per la gestione delle chiavi crittografiche \cite{androidkeystore} o per la protezione dei contenuti multimediali \cite{widevine} \cite{playready}.
 	
-	Con la sempre crescente rilevanza del cloud computing si è però cominciato ad avere interesse nell'utilizzo dei TEE anche in questo ambito \cite{demigha2021hardware} \cite{dai2010tee}, in quanto si tratta di soluzioni di sicurezza hardware e di conseguenza trasparenti anche per i clienti riguardo alle garanzie e rischi che portano.
+	Con la sempre crescente rilevanza del cloud computing si è però cominciato ad avere interesse nell'utilizzo dei TEE anche in questo ambito \cite{demigha2021hardware} \cite{dai2010tee}, in quanto si tratta di soluzioni di sicurezza implementate tramite hardware dedicato e di conseguenza trasparenti riguardo alle garanzie e rischi che portano anche per i clienti.
 	
 	\medbreak
 	
@@ -57,7 +57,7 @@
 	
 	\medbreak
 	
-	L'obiettivo di questo elaborato era presentare una possibile implementazione che permette di risolvere il problema riguardante confidenzialità ed integrità durante lo scambio dei dati tra TEE e sistema ospite.
+	L'obiettivo di questo elaborato era presentare una possibile implementazione che permetta di risolvere il problema riguardante la confidenzialità dei dati durante lo scambio tra TEE e sistema ospite.
 	
 	Per fare ciò è stato necessario implementare un protocollo crittografico ed un algoritmo per lo scambio chiavi tra la macchina virtuale gestita dal cliente ed il Trusted Execution Environment. 
 	
@@ -67,9 +67,9 @@
 	
 	Questa però non è un'implementazione definitiva, in quanto per un'integrazione totale di tale modello in ambiente cloud rimangono alcuni problemi da risolvere. 
 	
-	Ad esempio, in questo elaborato non è stato trattato il problema di memorizzazione delle chiavi crittografiche, che sarebbero visibili service provider. Inoltre sono possibili miglioramenti anche dal punto di vista di trasparenza ed usabilità da parte dell'utente finale.
+	Ad esempio, in questo elaborato non è stato trattato il problema di memorizzazione delle chiavi crittografiche, che sarebbero visibili dal service provider. Inoltre sono possibili miglioramenti anche dal punto di vista di trasparenza ed usabilità da parte dell'utente finale.
 	
-	Per concludere, questo lavoro può essere considerato un ulteriore passo aventi nella direzione un'implementazione completa.
+	Per concludere, questo lavoro può essere considerato un ulteriore passo avanti nella direzione un'implementazione completa.
 	
 	\bibliographystyle{unsrt}
 	\bibliography{bibliografia}
