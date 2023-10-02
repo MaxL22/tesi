@@ -750,7 +750,7 @@
 	
 	\section{Threat Model}
 	\label{sec:threat_model}
-	Fino ad ora il normale modello di minaccia relativo al cloud computing ha richiesto di considerare come fidato l'hypervisor in quanto la possibilità di accesso ai dati delle macchine virtuali ospitate risulta conseguenza delle necessità di mantenimento dell'infrastruttura del servizio.
+	Fino ad ora il normale modello di minaccia relativo al cloud computing ha richiesto di considerare come fidato l'hypervisor, il quale ha sempre accesso ai dati delle macchine virtuali che ospita in quanto gestore della memoria fisica.
 	
 	Con il modello presentato possono però nascere alcuni dubbi riguardo la privacy dei dati: non si ha nessuna garanzia che il service provider sia un ente fidato, inoltre non è da escludere la possibilità che il software di cui si compone l'infrastruttura stessa possa essere compromesso.
 	
@@ -810,6 +810,11 @@
 	
 	La suddivisione permette maggiore flessibilità sul controllo delle sessioni, consentendo di mantenere aperta la connessione con una TA nel caso siano necessari più comandi eseguiti da quest'ultima all'interno di una singola istanza di questa.
 	
+	\bigbreak
+	
+	Questa soluzione è stata scartata per motivi di performance, come già menzionato precedentemente. La soluzione effettivamente implementata è quella presentata nella sezione \ref{sec:critt}.
+	
+	
 	%%% ---- ADD IMG ---- %%%
 	
 	%        \begin{figure}[t]
@@ -818,6 +823,38 @@
 		% 	\caption{ Schema ad alto livello di funzionamento del Proxy }
 		% 	\label{fig:proxy}
 		% \end{figure}
+	
+	\newpage
+	
+	\section{Layer di Crittografia}
+	\label{sec:critt}
+	L'obiettivo del progetto, come evidenziato precedentemente, è centrato sulla protezione della confidenzialità dei dati durante le fasi di transito, un problema che la crittografia permette di risolvere. 
+	
+	\bigbreak
+	
+	Il metodo che permette il minor degradamento delle prestazioni è quello di cifrare i dati anticipatamente rispetto alla richiesta ed eseguire il processo di decifratura all'interno della TA di destinazione. 
+	
+	Questo approccio risulta però poco trasparente per l'utente finale in quanto la gestione della crittografia, per quanto possa essere resa standardizzata, rimane di sua competenza, dovendosi occupare di inserire i processi necessari all'interno di applicazione e TA. 
+	
+	\bigbreak 
+	
+	Il primo passo decisionale effettuato ha coinvolto la scelta dell'algoritmo da impiegare: data una maggiore efficienza è velocità di elaborazione si è optato per un protocollo a chiave simmetrica e di conseguenza una semplice implementazione di AES \cite{aes} per la sua adattabilità, sicurezza ad attacchi noti e supporto diffuso. 
+	
+	\bigbreak 
+	
+	Per utilizzare la cifratura, all'interno del REE, sarà necessario chiamare la funzione relativa sul buffer che si intende passare al TEE, cifrandone i contenuti con il segreto ottenuto precedentemente in seguito allo scambio chiavi.
+	
+	All'interno del TEE l'istanza della TA chiamata dovrebbe già essere in possesso della chiave condivisa ed essere in grado di decifrare il buffer, ma prima di fare ciò quest'ultimo va copiato all'interno di un secondo buffer allocato internamente al TEE, in quanto modificare i dati direttamente causerebbe una modifica anche all'interno del REE ed i dati di sincronizzazione tra i due ambienti devono passare tramite l'hypervisor, rendendo inutile il processo.
+	
+	\bigbreak
+	
+	Per ora si è presupposto che i dati inclusi con la richiesta siano locati all'interno di un buffer, ma le specifiche GlobalPlatform \cite{gp2020clientapi} permettono il passaggio di dati con altri metodi, come può essere una semplice coppia di valori.
+	
+	L'attuale implementazione permette solo la crittografia di almeno 128 bit, per specifiche di AES, quindi richiede un buffer dedicato. Ciò può causare problemi in quanto la gestione della struttura di memoria legata ad un buffer risulta molto più costosa in termini di prestazioni rispetto alla semplice coppia di valori, come evidenziato nella sezione relativa alle performance (\ref{sec:dati}).
+	
+	\bigbreak
+	
+	Nella nostra soluzione non è stato implementato, ma sarebbe possibile integrare il processo di cifratura della chiamata e decifratura della risposta all'interno dei driver virtuali per il TEE descritti nel capitolo precedente, così da semplificare l'utilizzo del sistema. Non si può avere una soluzione equivalente all'interno della TA, che quindi richiederà comunque delle modifiche.
 	
 	\newpage
 	
@@ -877,37 +914,6 @@
 	
 	Uno dei problemi che rimane è la memorizzazione delle chiavi, ma questo coincide con il problema più generale e già discusso (\ref{sec:threat_model}) riguardante la sicurezza dei dati relativi alla VM quando questi sono memorizzati su disco.
 	
-	\newpage
-	
-	\section{Layer di Crittografia}
-	\label{sec:critt}
-	L'obiettivo del progetto, come evidenziato precedentemente, è centrato sulla protezione della confidenzialità dei dati durante le fasi di transito, un problema che la crittografia permette di risolvere. 
-	
-	\bigbreak
-	
-	Il metodo che permette il minor degradamento delle prestazioni è quello di cifrare i dati anticipatamente rispetto alla richiesta ed eseguire il processo di decifratura all'interno della TA di destinazione. 
-	
-	Questo approccio risulta però poco trasparente per l'utente finale in quanto la gestione della crittografia, per quanto possa essere resa standardizzata, rimane di sua competenza, dovendosi occupare di inserire i processi necessari all'interno di applicazione e TA. 
-	
-	\bigbreak 
-	
-	Il primo passo decisionale effettuato ha coinvolto la scelta dell'algoritmo da impiegare: data una maggiore efficienza è velocità di elaborazione si è optato per un protocollo a chiave simmetrica e di conseguenza una semplice implementazione di AES \cite{aes} per la sua adattabilità, sicurezza ad attacchi noti e supporto diffuso. 
-	
-	\bigbreak 
-	
-	Per utilizzare la cifratura, all'interno del REE, sarà necessario chiamare la funzione relativa sul buffer che si intende passare al TEE, cifrandone i contenuti con il segreto ottenuto precedentemente in seguito allo scambio chiavi.
-	
-	All'interno del TEE l'istanza della TA chiamata dovrebbe già essere in possesso della chiave condivisa ed essere in grado di decifrare il buffer, ma prima di fare ciò quest'ultimo va copiato all'interno di un secondo buffer allocato internamente al TEE, in quanto modificare i dati direttamente causerebbe una modifica anche all'interno del REE ed i dati di sincronizzazione tra i due ambienti devono passare tramite l'hypervisor, rendendo inutile il processo.
-	
-	\bigbreak
-	
-	Per ora si è presupposto che i dati inclusi con la richiesta siano locati all'interno di un buffer, ma le specifiche GlobalPlatform \cite{gp2020clientapi} permettono il passaggio di dati con altri metodi, come può essere una semplice coppia di valori.
-	
-	L'attuale implementazione permette solo la crittografia di almeno 128 bit, per specifiche di AES, quindi richiede un buffer dedicato. Ciò può causare problemi in quanto la gestione della struttura di memoria legata ad un buffer risulta molto più costosa in termini di prestazioni rispetto alla semplice coppia di valori, come evidenziato nella sezione relativa alle performance (\ref{sec:dati}).
-	
-	\bigbreak
-	
-	Nella nostra soluzione non è stato implementato, ma sarebbe possibile integrare il processo di cifratura della chiamata e decifratura della risposta all'interno dei driver virtuali per il TEE descritti nel capitolo precedente, così da semplificare l'utilizzo del sistema. Non si può avere una soluzione equivalente all'interno della TA, che quindi richiederà comunque delle modifiche.
 	
 	\newpage
 	
@@ -915,7 +921,7 @@
 	\label{sec:dati}
 	Le fasi di sviluppo e test sono state effettuate su una macchina virtuale QEMU la quale simula un processore ARMv8 Cortex-A57 con 4 core e 2GB di RAM, il quale include il supporto a TrustZone. Il Trusted Execution Environment utilizzato è OP-TEE versione 3.21.0.
 	
-	Per i test sono stati adeguati due programmi presenti tra gli esempi di Trusted Application forniti da OP-TEE \cite{optee_examples}. Il primo, \texttt{random}, è un programma che riempie un buffer fornito dal REE con valori casuali prima di restituirlo, mentre il secondo, \texttt{hw}, si occupa semplicemente di incrementare un valore.
+	Per i test sono stati adeguati due programmi presenti tra gli esempi di Trusted Application forniti da OP-TEE \cite{optee_examples}. Il primo, \texttt{test\_1}, si tratta di un programma che riempie un buffer fornito dal REE con valori casuali prima di restituirlo, mentre il secondo, \texttt{test\_2}, si occupa semplicemente di incrementare un valore. Sono basati, rispettivamente, sui programmi \textit{random} ed \textit{hello\_world} di OP-TEE.
 	
 	I valori presenti all'interno della Tabella \ref{tab:performance} costituiscono i tempi per l'esecuzione di 1000 chiamate alla TA relativa. Le misure sono state eseguite 1000 volte e viene riportata media e deviazione standard.  
 	
@@ -934,8 +940,8 @@
 			\multicolumn{1}{c|}{\textbf{Dev. Std}}  &
 			\multicolumn{1}{c|}{\textbf{Media}}     &  
 			\multicolumn{1}{c}{\textbf{Dev. Std}}  \\ \hline
-			\texttt{random}          & 4,048     & 0,197     & 4,100     & 0,176     & 6,357     & 0,252     \\
-			\texttt{hw}    & 2,189     & 0,139     & 4,560     & 0,203     & 5,655     & 0,218     \\
+			\texttt{test\_1}          & 4,048     & 0,197     & 4,100     & 0,176     & 6,357     & 0,252     \\
+			\texttt{test\_2}    & 2,189     & 0,139     & 4,560     & 0,203     & 5,655     & 0,218     \\
 		\end{tabular}
 		
 		\hfill \\
@@ -944,8 +950,8 @@
 		\begin{tabular}{ccc}
 			\multicolumn{1}{c|}{\textbf{Test}} & \multicolumn{1}{c|}{\textbf{Overhead Crittografia}} & \multicolumn{1}{c}{\textbf{Overhead Proxy}} \\
 			\hline
-			\texttt{random}        & 1,288\%   & 57,033\%  \\
-			\texttt{hw}  & 108,32\%  & 158,33\%  \\
+			\texttt{test\_1}        & 1,288\%   & 57,033\%  \\
+			\texttt{test\_2}  & 108,32\%  & 158,33\%  \\
 		\end{tabular}
 		
 		\caption{ Confronto tra le performance delle diverse soluzioni }
@@ -954,7 +960,7 @@
 	
 	Il degradamento delle performance dovuto al proxy, come anticipato, è molto elevato, soprattutto nel caso di applicazioni semplici come presentate sopra, tanto da risultare inaccettabile.
 	
-	L'overhead della crittografia invece varia drasticamente in base alla struttura dati utilizzata dall'applicazione originaria, in quanto per le operazioni di cifratura è sempre necessario l'utilizzo di un buffer. Se quest'ultimo non risulta presente all'interno della chiamata a TA originale, come per il caso di \texttt{hw}, diventa necessario modificare la struttura della chiamata stessa, aggiungendo anche l'overhead dovuto alla gestione della differente struttura dati, sicuramente più costosa in termini di performance rispetto a quella originaria, in modo anche significativo.
+	L'overhead della crittografia invece varia drasticamente in base alla struttura dati utilizzata dall'applicazione originaria, in quanto per le operazioni di cifratura è sempre necessario l'utilizzo di un buffer. Se quest'ultimo non risulta presente all'interno della chiamata a TA originale, come per il caso di \texttt{test\_2}, diventa necessario modificare la struttura della chiamata stessa, aggiungendo anche l'overhead dovuto alla gestione della differente struttura dati, sicuramente più costosa in termini di performance rispetto a quella originaria, in modo anche significativo.
 	
 	\bigbreak 
 	
